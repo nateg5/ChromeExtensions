@@ -60,7 +60,7 @@ chrome.storage.local.get('props', function(item) {
     itemsArray.sort(function(a, b) {
         return b.rating - a.rating;
     });
-    colorArray = ["#60ff60", "#70ff70", "#80ff80", "#90ff90", "#a0ffa0", "#b0ffb0", "#c0ffc0", "#d0ffd0", "#e0ffe0", "#f0fff0"];
+    colorArray = ["#00ff00", "#10ff10", "#20ff20", "#30ff30", "#40ff40", "#50ff50", "#60ff60", "#70ff70", "#80ff80", "#90ff90", "#a0ffa0", "#b0ffb0", "#c0ffc0", "#d0ffd0", "#e0ffe0", "#f0fff0"];
     for(let i = 0; i < itemsArray.length; i++) {
         if(checked) {
             if(i < showNumber) {
