@@ -5,7 +5,7 @@ chrome.storage.local.get('props', function(item) {
     if(items.length === 0) {
         items = document.getElementsByClassName('s-result-item');
     }
-    let totalCount = 0;
+    let counts = [];
     for(let i = 0; i < items.length; i++) {
         let count = 1;
         let countArray = items[i].getElementsByClassName('a-size-small a-link-normal');
@@ -22,9 +22,12 @@ chrome.storage.local.get('props', function(item) {
         if(isNaN(count)) {
             count = 1;
         }
-        totalCount += count;
+        counts.push(count);
     }
-    let weight = Math.ceil(totalCount / items.length / 10);
+    counts.sort(function(a, b) {
+        return a - b;   
+    });
+    let weight = Math.ceil(counts[Math.ceil(counts.length / 2)] / 10);
     itemsArray = [];
     for(let i = 0; i < items.length; i++) {
         let rating = 1;
