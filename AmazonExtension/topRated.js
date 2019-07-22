@@ -28,6 +28,7 @@ chrome.storage.local.get('props', function(item) {
         return a - b;   
     });
     let weight = Math.ceil(counts[Math.ceil(counts.length / 2)] / 10);
+    console.log("weight = " + weight);
     itemsArray = [];
     for(let i = 0; i < items.length; i++) {
         let rating = 1;
@@ -76,7 +77,7 @@ chrome.storage.local.get('props', function(item) {
         if(checked) {
             if(i < showNumber) {
                 itemsArray[i].item.style.backgroundColor = colorArray[i];
-                itemsArray[i].countItem.innerHTML += " - #" + (i + 1);
+                itemsArray[i].countItem.innerHTML += " - #" + (i + 1) + " - " + itemsArray[i].rating.toFixed(2);
             } else {
                 itemsArray[i].item.style.height = '0px';
                 itemsArray[i].item.style.visibility = 'hidden';
