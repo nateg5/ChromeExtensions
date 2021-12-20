@@ -1,15 +1,17 @@
 chrome.storage.local.get('props', function(item) {
     checked = item.props.checked;
     showNumber = Number(item.props.showNumber);
-    items = document.getElementsByClassName('zg-item-immersion');
+    let bestSellers = true;
+    items = document.getElementsByClassName('p13n-grid-content');
     if(items.length === 0) {
+        bestSellers = false;
         items = document.getElementsByClassName('s-result-item');
     }
     let counts = [];
     for(let i = 0; i < items.length; i++) {
         let count = 1;
-        let countArray = items[i].getElementsByClassName('a-size-small a-link-normal');
-        if(countArray.length === 0) {
+        let countArray = items[i].getElementsByClassName('a-size-small');
+        if(!bestSellers) {
             countArray = items[i].getElementsByClassName('a-size-base');
         }
         if(countArray.length > 0) {
@@ -25,8 +27,9 @@ chrome.storage.local.get('props', function(item) {
         counts.push(count);
     }
     counts.sort(function(a, b) {
-        return a - b;   
+        return a - b;
     });
+    console.log("counts", counts);
     let weight = Math.ceil(counts[Math.ceil(counts.length / 2)] / 10);
     console.log("weight = " + weight);
     itemsArray = [];
@@ -41,8 +44,8 @@ chrome.storage.local.get('props', function(item) {
             }
         }
         let count = 1;
-        let countArray = items[i].getElementsByClassName('a-size-small a-link-normal');
-        if(countArray.length === 0) {
+        let countArray = items[i].getElementsByClassName('a-size-small');
+        if(!bestSellers) {
             countArray = items[i].getElementsByClassName('a-size-base');
         }
         let j = 0;
@@ -66,6 +69,7 @@ chrome.storage.local.get('props', function(item) {
     itemsArray.sort(function(a, b) {
         return b.rating - a.rating;
     });
+    console.log("itemsArray", itemsArray);
     colorArray = ["#00ff00", "#10ff10", "#20ff20", "#30ff30", "#40ff40", "#50ff50", "#60ff60", "#70ff70", "#80ff80", "#90ff90", "#a0ffa0", "#b0ffb0", "#c0ffc0", "#d0ffd0", "#e0ffe0", "#f0fff0"];
     for(let i = 0; i < itemsArray.length; i++) {
         itemsArray[i].item.style.backgroundColor = "#ffffff";
@@ -81,7 +85,7 @@ chrome.storage.local.get('props', function(item) {
             } else {
                 itemsArray[i].item.style.height = '0px';
                 itemsArray[i].item.style.visibility = 'hidden';
-            } 
+            }
         }
     }
 });
