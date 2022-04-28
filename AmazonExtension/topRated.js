@@ -2,14 +2,15 @@ chrome.storage.local.get('props', function(item) {
     checked = item.props.checked;
     showNumber = Number(item.props.showNumber);
     let bestSellers = true;
-    items = document.getElementsByClassName('_p13n-zg-list-grid-desktop_style_grid-column__2hIsc');
+    items = document.getElementsByClassName('a-column a-span12 a-text-center _cDEzb_grid-column_2hIsc');
     if(items.length === 0) {
         bestSellers = false;
         items = document.getElementsByClassName('s-result-item');
     }
     if(items.length === 0) {
-        items = document.getElementsByClassName('g-item-sortable');
+        items = document.getElementsByClassName('_octopus-search-result-card_style_apbSearchResultItem__2-mx4');
     }
+	console.log("item", items);
     let counts = [];
     for(let i = 0; i < items.length; i++) {
         let count = 1;
