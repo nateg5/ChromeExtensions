@@ -1,38 +1,39 @@
 chrome.storage.local.get("props", function (item) {
   let createFilters = () => {
-    let filterDiv = document.createElement("div");
-    filterDiv.id = "jwceFilter";
     let select = "<select id='filterSelect'>";
+    select += "<option value='0'>Show All</option>";
     select += "<option value='10000'>10000</option>";
     select += "<option value='100000'>100000</option>";
     select += "<option value='toprated'>Top Rated</option>";
     select += "</select>";
-    filterDiv.innerHTML = select;
 
-    let ageDiv = document.createElement("div");
-    ageDiv.id = "jwceAge";
     let ageSelect = "<select id='ageSelect'>";
     ageSelect += "<option value='all'>Show All</option>";
     ageSelect += "<option value='R'>Hide R</option>";
     ageSelect += "<option value='R,'>Hide R and Unrated</option>";
     ageSelect += "</select>";
-    ageDiv.innerHTML = ageSelect;
 
-    if (document.getElementsByClassName("filter-bar__additional").length > 0) {
+    let foreignSelect = "<select id='foreignSelect'>";
+    foreignSelect += "<option value='all'>Show All</option>";
+    foreignSelect += "<option value='foreign'>Hide Foreign</option>";
+    foreignSelect += "</select>";
+
+    let filterDiv = document.createElement("div");
+    filterDiv.innerHTML = select + ageSelect + foreignSelect;
+
+    if (document.getElementsByClassName("row-filter-bar").length > 0) {
       document
-        .getElementsByClassName("filter-bar__additional")[0]
-        .getElementsByClassName("hidden-horizontal-scrollbar__items")[0]
+        .getElementsByClassName("row-filter-bar")[0]
         .appendChild(filterDiv);
+
       document.getElementById("filterSelect").addEventListener("click", () => {
         filterChange();
       });
-
-      document
-        .getElementsByClassName("filter-bar__additional")[0]
-        .getElementsByClassName("hidden-horizontal-scrollbar__items")[0]
-        .appendChild(ageDiv);
       document.getElementById("ageSelect").addEventListener("click", () => {
         ageChange();
+      });
+      document.getElementById("foreignSelect").addEventListener("click", () => {
+        foreignChange();
       });
     }
   };
@@ -45,10 +46,15 @@ chrome.storage.local.get("props", function (item) {
     ageValue = document.getElementById("ageSelect").value.split(",");
   };
 
+  let foreignChange = () => {
+    foreignValue = document.getElementById("foreignSelect").value.split(",");
+  };
+
   setInterval(() => {
     if (
-      !document.getElementById("jwceFilter") ||
-      !document.getElementById("jwceAge")
+      !document.getElementById("filterSelect") ||
+      !document.getElementById("ageSelect") ||
+      !document.getElementById("foreignSelect")
     ) {
       createFilters();
     }
@@ -57,8 +63,9 @@ chrome.storage.local.get("props", function (item) {
   let busy = false;
   let movieData = {};
   let movieQueue = [];
-  let filterValue = "10000";
+  let filterValue = "0";
   let ageValue = ["all"];
+  let foreignValue = "all";
   let hideMovie = (movie) => {
     if (isNaN(filterValue)) {
       if (filterValue == "toprated") {
@@ -66,7 +73,7 @@ chrome.storage.local.get("props", function (item) {
           (movie.count * movie.rating) / (movie.count + 10000);
         if (
           weightedRating < (100000 * 7) / 110000 ||
-          movie.foreign ||
+          movie.foreign == foreignValue ||
           ageValue.indexOf(movie.age) >= 0
         ) {
           if (movie.element.parentElement.style.display != "none") {
@@ -82,7 +89,7 @@ chrome.storage.local.get("props", function (item) {
       filterValue = Number(filterValue);
       if (
         movie.count < filterValue ||
-        movie.foreign ||
+        movie.foreign == foreignValue ||
         ageValue.indexOf(movie.age) >= 0
       ) {
         if (movie.element.parentElement.style.display != "none") {
@@ -138,7 +145,7 @@ chrome.storage.local.get("props", function (item) {
           try {
             if (this.status == 200) {
               // is it in another language
-              let foreign = this.responseText.indexOf("Original Title:") >= 0;
+              let foreign = this.responseText.indexOf("Original Title:") >= 0 ? "foreign" : "";
               movieQueue[0].foreign = foreign;
 
               // get imdb rating and count
