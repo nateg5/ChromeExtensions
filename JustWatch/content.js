@@ -18,8 +18,13 @@ chrome.storage.local.get("props", function (item) {
     foreignSelect += "<option value='foreign'>Hide Foreign</option>";
     foreignSelect += "</select>";
 
+    let leavingSelect = "<select id='leavingSelect'>";
+    leavingSelect += "<option value='all'>Show All</option>";
+    leavingSelect += "<option value='staying'>Show Leaving Soon</option>";
+    leavingSelect += "</select>";
+
     let filterDiv = document.createElement("div");
-    filterDiv.innerHTML = select + ageSelect + foreignSelect;
+    filterDiv.innerHTML = select + ageSelect + foreignSelect + leavingSelect;
 
     if (document.getElementsByClassName("row-filter-bar").length > 0) {
       document
@@ -34,6 +39,9 @@ chrome.storage.local.get("props", function (item) {
       });
       document.getElementById("foreignSelect").addEventListener("click", () => {
         foreignChange();
+      });
+      document.getElementById("leavingSelect").addEventListener("click", () => {
+        leavingChange();
       });
     }
   };
@@ -50,11 +58,16 @@ chrome.storage.local.get("props", function (item) {
     foreignValue = document.getElementById("foreignSelect").value.split(",");
   };
 
+  let leavingChange = () => {
+    leavingValue = document.getElementById("leavingSelect").value.split(",");
+  };
+
   setInterval(() => {
     if (
       !document.getElementById("filterSelect") ||
       !document.getElementById("ageSelect") ||
-      !document.getElementById("foreignSelect")
+      !document.getElementById("foreignSelect") ||
+      !document.getElementById("leavingSelect")
     ) {
       createFilters();
     }
@@ -66,6 +79,7 @@ chrome.storage.local.get("props", function (item) {
   let filterValue = "0";
   let ageValue = ["all"];
   let foreignValue = "all";
+  let leavingValue = "all";
   let hideMovie = (movie) => {
     if (isNaN(filterValue)) {
       if (filterValue == "toprated") {
@@ -74,6 +88,7 @@ chrome.storage.local.get("props", function (item) {
         if (
           weightedRating < (100000 * 7) / 110000 ||
           movie.foreign == foreignValue ||
+          movie.leaving == leavingValue ||
           ageValue.indexOf(movie.age) >= 0
         ) {
           if (movie.element.parentElement.style.display != "none") {
@@ -90,6 +105,7 @@ chrome.storage.local.get("props", function (item) {
       if (
         movie.count < filterValue ||
         movie.foreign == foreignValue ||
+        movie.leaving == leavingValue ||
         ageValue.indexOf(movie.age) >= 0
       ) {
         if (movie.element.parentElement.style.display != "none") {
@@ -121,6 +137,7 @@ chrome.storage.local.get("props", function (item) {
             movieData[key].rating == undefined ||
             movieData[key].count == undefined ||
             movieData[key].foreign == undefined ||
+            movieData[key].leaving == undefined ||
             movieData[key].age == undefined
           ) {
             movieQueue.push(movieData[key]);
@@ -147,6 +164,10 @@ chrome.storage.local.get("props", function (item) {
               // is it in another language
               let foreign = this.responseText.indexOf("Original Title:") >= 0 ? "foreign" : "";
               movieQueue[0].foreign = foreign;
+
+              // is it in leaving soon
+              let leaving = this.responseText.indexOf("Leaving in ") >= 0 ? "leaving" : "staying";
+              movieQueue[0].leaving = leaving;
 
               // get imdb rating and count
               if (
