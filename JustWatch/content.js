@@ -9,8 +9,8 @@ chrome.storage.local.get("props", function (item) {
 
     let ageSelect = "<select id='ageSelect'>";
     ageSelect += "<option value='all'>Show All</option>";
-    ageSelect += "<option value='R'>Hide R</option>";
-    ageSelect += "<option value='R,'>Hide R and Unrated</option>";
+    ageSelect += "<option value='R,TV-MA'>Hide R and TV-MA</option>";
+    ageSelect += "<option value='R,TV-MA,'>Hide R, TV-MA and Unrated</option>";
     ageSelect += "</select>";
 
     let foreignSelect = "<select id='foreignSelect'>";
@@ -23,8 +23,14 @@ chrome.storage.local.get("props", function (item) {
     leavingSelect += "<option value='staying'>Show Leaving Soon</option>";
     leavingSelect += "</select>";
 
+    let seasonSelect = "<select id='seasonSelect'>";
+    seasonSelect += "<option value='all'>Show All</option>";
+    seasonSelect += "<option value='1'>Hide Single Season</option>";
+    seasonSelect += "</select>";
+
     let filterDiv = document.createElement("div");
-    filterDiv.innerHTML = select + ageSelect + foreignSelect + leavingSelect;
+    filterDiv.innerHTML =
+      select + ageSelect + foreignSelect + leavingSelect + seasonSelect;
 
     if (document.getElementsByClassName("row-filter-bar").length > 0) {
       document
@@ -42,6 +48,9 @@ chrome.storage.local.get("props", function (item) {
       });
       document.getElementById("leavingSelect").addEventListener("click", () => {
         leavingChange();
+      });
+      document.getElementById("seasonSelect").addEventListener("click", () => {
+        seasonChange();
       });
     }
   };
@@ -62,12 +71,17 @@ chrome.storage.local.get("props", function (item) {
     leavingValue = document.getElementById("leavingSelect").value.split(",");
   };
 
+  let seasonChange = () => {
+    seasonValue = document.getElementById("seasonSelect").value.split(",");
+  };
+
   setInterval(() => {
     if (
       !document.getElementById("filterSelect") ||
       !document.getElementById("ageSelect") ||
       !document.getElementById("foreignSelect") ||
-      !document.getElementById("leavingSelect")
+      !document.getElementById("leavingSelect") ||
+      !document.getElementById("seasonSelect")
     ) {
       createFilters();
     }
@@ -80,6 +94,8 @@ chrome.storage.local.get("props", function (item) {
   let ageValue = ["all"];
   let foreignValue = "all";
   let leavingValue = "all";
+  let seasonValue = "all";
+  let serviceNames = [];
   let hideMovie = (movie) => {
     if (isNaN(filterValue)) {
       if (filterValue == "toprated") {
@@ -89,6 +105,7 @@ chrome.storage.local.get("props", function (item) {
           weightedRating < (100000 * 7) / 110000 ||
           movie.foreign == foreignValue ||
           movie.leaving == leavingValue ||
+          movie.seasons == seasonValue ||
           ageValue.indexOf(movie.age) >= 0
         ) {
           if (movie.element.parentElement.style.display != "none") {
@@ -106,6 +123,7 @@ chrome.storage.local.get("props", function (item) {
         movie.count < filterValue ||
         movie.foreign == foreignValue ||
         movie.leaving == leavingValue ||
+        movie.seasons == seasonValue ||
         ageValue.indexOf(movie.age) >= 0
       ) {
         if (movie.element.parentElement.style.display != "none") {
@@ -146,6 +164,14 @@ chrome.storage.local.get("props", function (item) {
             }
           }
         }
+        serviceNames = [];
+        elements = document.getElementsByClassName("filter-bar__provider-icon");
+        for (let i = 0; i < elements.length; i++) {
+          let serviceName = elements[i].getElementsByTagName("img")[0].title;
+          if (serviceName.length > 0) {
+            serviceNames.push(serviceName);
+          }
+        }
       } catch (e) {
         console.log("********** ERROR **********", e);
       } finally {
@@ -162,11 +188,17 @@ chrome.storage.local.get("props", function (item) {
           try {
             if (this.status == 200) {
               // is it in another language
-              let foreign = this.responseText.indexOf("Original Title:") >= 0 ? "foreign" : "";
+              let foreign =
+                this.responseText.indexOf("Original Title:") >= 0
+                  ? "foreign"
+                  : "";
               movieQueue[0].foreign = foreign;
 
               // is it in leaving soon
-              let leaving = this.responseText.indexOf("Leaving in ") >= 0 ? "leaving" : "staying";
+              let leaving =
+                this.responseText.indexOf("Leaving in ") >= 0
+                  ? "leaving"
+                  : "staying";
               movieQueue[0].leaving = leaving;
 
               // get imdb rating and count
@@ -214,6 +246,29 @@ chrome.storage.local.get("props", function (item) {
                 substr = substr.substring(substr.indexOf(">") + 1);
                 substr = substr.substring(0, substr.indexOf("</div>"));
                 movieQueue[0].age = substr;
+              }
+
+              // get number of seasons
+              for (let i = 0; i < serviceNames.length; i++) {
+                substr = this.responseText;
+                if (substr.indexOf('title="' + serviceNames[i] + '"') >= 0) {
+                  substr = substr.substring(
+                    substr.indexOf('title="' + serviceNames[i] + '"')
+                  );
+                  substr = substr.substring(0, substr.indexOf("</div>"));
+                  if (substr.indexOf("Season") >= 0) {
+                    substr = substr.substring(substr.indexOf("Season") - 10);
+                    substr = substr.substring(substr.indexOf(">") + 1);
+                    substr = substr.substring(0, substr.indexOf("<"));
+                    substr = substr.split(" ")[0];
+                    if (
+                      !movieQueue[0].seasons ||
+                      movieQueue[0].seasons < Number(substr)
+                    ) {
+                      movieQueue[0].seasons = Number(substr);
+                    }
+                  }
+                }
               }
 
               hideMovie(movieQueue[0]);
