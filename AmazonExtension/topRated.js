@@ -5,7 +5,7 @@ chrome.storage.local.get('props', function(item) {
     items = document.getElementsByClassName('a-column a-span12 a-text-center _cDEzb_grid-column_2hIsc');
     if(items.length === 0) {
         bestSellers = false;
-        items = document.getElementsByClassName('s-result-item');
+        items = document.getElementsByClassName('sg-col-4-of-12 sg-col-4-of-16 sg-col-4-of-20 sg-col-4-of-24');
     }
     if(items.length === 0) {
         items = document.getElementsByClassName('_octopus-search-result-card_style_apbSearchResultItem__2-mx4');
@@ -16,19 +16,22 @@ chrome.storage.local.get('props', function(item) {
         let count = 1;
         let countArray = items[i].getElementsByClassName('a-size-small');
         if(!bestSellers) {
-            countArray = items[i].getElementsByClassName('a-size-base');
+            countArray = items[i].getElementsByClassName('a-size-base s-underline-text');
         }
+        let j = 0;
         if(countArray.length > 0) {
             count = undefined;
-            for(let j = 0; j < countArray.length && isNaN(count); j++) {
+            for(j = 0; j < countArray.length && isNaN(count); j++) {
                 count = countArray[j].innerHTML;
-                count = parseInt(count.replace(",", ""));
+                count = parseInt(count.replace(",", "").replace("(", "").replace(")", ""));
             }
         }
         if(isNaN(count)) {
             count = 1;
         }
-        counts.push(count);
+        if(countArray[j - 1] && countArray[j - 1].innerHTML) {
+            counts.push(count);
+        }
     }
     counts.sort(function(a, b) {
         return a - b;
@@ -50,25 +53,27 @@ chrome.storage.local.get('props', function(item) {
         let count = 1;
         let countArray = items[i].getElementsByClassName('a-size-small');
         if(!bestSellers) {
-            countArray = items[i].getElementsByClassName('a-size-base');
+            countArray = items[i].getElementsByClassName('a-size-base s-underline-text');
         }
         let j = 0;
         if(countArray.length > 0) {
             count = undefined;
             for(j = 0; j < countArray.length && isNaN(count); j++) {
                 count = countArray[j].innerHTML;
-                count = parseInt(count.replace(",", ""));
+                count = parseInt(count.replace(",", "").replace("(", "").replace(")", ""));
             }
         }
         if(isNaN(rating) || isNaN(count)) {
             rating = 1;
             count = 1;
         }
-        itemsArray.push({
-            item: items[i],
-            countItem: countArray[j - 1],
-            rating: (rating * count) / (count + weight)
-        });
+        if(countArray[j - 1] && countArray[j - 1].innerHTML) {
+            itemsArray.push({
+                item: items[i],
+                countItem: countArray[j - 1],
+                rating: (rating * count) / (count + weight)
+            });
+        }
     }
     itemsArray.sort(function(a, b) {
         return b.rating - a.rating;
