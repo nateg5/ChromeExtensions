@@ -1,33 +1,20 @@
+"use strict";
 
-'use strict';
+let enabled = document.getElementById("enabled");
 
-let topRated = document.getElementById('topRated');
-let showNumber = document.getElementById('showNumber');
-
-chrome.storage.local.get('props', function(item) {
-    topRated.checked = item.props.checked;
-    showNumber.value = item.props.showNumber;
+chrome.storage.local.get("props", function (item) {
+  enabled.checked = item.props.checked;
 });
 
-topRated.onclick = function(element) {
-  update();
-};
-
-showNumber.onchange = function(element) {
+enabled.onclick = function (element) {
   update();
 };
 
 function update() {
   chrome.storage.local.set({
-      props: {
-        checked: topRated.checked,
-        showNumber: showNumber.value
-      }
+    props: {
+      checked: enabled.checked,
+    },
   });
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.executeScript(
-        tabs[0].id,
-        {file: 'topRated.js'});
-  });
-
+  chrome.tabs.reload();
 }

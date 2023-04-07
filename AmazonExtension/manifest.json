@@ -2,16 +2,18 @@
   "name": "Amazon Top Rated",
   "version": "1.0",
   "description": "Amazon Top Rated Actions",
-  "permissions": ["activeTab", "declarativeContent", "storage"],
+  "permissions": ["declarativeContent", "storage", "scripting"],
   "background": {
-    "scripts": ["background.js"],
-    "persistent": false
+    "service_worker": "background.js"
   },
-  "content_scripts": [{
-    "matches": ["https://*.amazon.com/*"],
-    "js": ["topRated.js"]
-  }],
-  "page_action": {
+  "content_scripts": [
+    {
+      "matches": ["https://*.amazon.com/*"],
+      "js": ["topRated.js"]
+    }
+  ],
+  "host_permissions": ["https://*.amazon.com/*"],
+  "action": {
     "default_popup": "popup.html",
     "default_icon": {
       "16": "images/amazon16.png",
@@ -26,5 +28,5 @@
     "48": "images/amazon48.png",
     "128": "images/amazon128.png"
   },
-  "manifest_version": 2
+  "manifest_version": 3
 }
