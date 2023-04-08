@@ -106,8 +106,6 @@ chrome.storage.local.get("props", function (item) {
       if (update) {
         items.reverse();
 
-        console.log("items", items);
-
         for (let i = 0; i < items.length; i++) {
           document
             .getElementsByClassName(topLevelClass)
@@ -117,6 +115,11 @@ chrome.storage.local.get("props", function (item) {
                 .firstChild
             );
         }
+
+
+        items.reverse();
+
+        console.log("items", items);
       }
     }
   };
