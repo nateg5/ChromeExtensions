@@ -85,14 +85,14 @@ chrome.storage.local.get("props", function (item) {
     ) {
       createFilters();
     }
-  }, 1000);
+  }, 10000);
 
   let busy = false;
   let movieData = {};
   let movieQueue = [];
-  let filterValue = "0";
+  let filterValue = "toprated";
   let ageValue = ["all"];
-  let foreignValue = "all";
+  let foreignValue = "foreign";
   let leavingValue = "all";
   let seasonValue = "all";
   let serviceNames = [];
@@ -102,7 +102,7 @@ chrome.storage.local.get("props", function (item) {
         let weightedRating =
           (movie.count * movie.rating) / (movie.count + 10000);
         if (
-          weightedRating < (100000 * 7) / 110000 ||
+          weightedRating < (100000 * 5) / 110000 ||
           movie.foreign == foreignValue ||
           movie.leaving == leavingValue ||
           movie.seasons == seasonValue ||
@@ -159,7 +159,7 @@ chrome.storage.local.get("props", function (item) {
             movieData[key].age == undefined
           ) {
             movieQueue.push(movieData[key]);
-            if (movieQueue.length >= 3) {
+            if (movieQueue.length >= 1) {
               break;
             }
           }
@@ -178,7 +178,7 @@ chrome.storage.local.get("props", function (item) {
         busy = false;
       }
     }
-  }, 1000);
+  }, 10000);
   setInterval(() => {
     if (!busy && movieQueue.length > 0) {
       busy = true;
@@ -214,9 +214,9 @@ chrome.storage.local.get("props", function (item) {
                 let substr = this.responseText.substring(
                   this.responseText.indexOf('alt="IMDB"')
                 );
-                substr = substr.substring(substr.indexOf(">") + 2);
-                substr = substr.substring(0, substr.indexOf("</a>") - 1);
-                let parts = substr.split(" ");
+                substr = substr.substring(substr.indexOf("<span>") + 6);
+                substr = substr.substring(0, substr.indexOf("</span>") - 1);
+                let parts = substr.trim().replace("   ", " ").replace("  ", " ").split(" ");
                 let rating = parts[0] ?? "0";
                 let count = parts[1] ?? "0";
                 count = count.substring(1, count.length - 1);
@@ -290,5 +290,5 @@ chrome.storage.local.get("props", function (item) {
       xhttp.open("GET", movieQueue[0].element.href, true);
       xhttp.send();
     }
-  }, 1000);
+  }, 10000);
 });
