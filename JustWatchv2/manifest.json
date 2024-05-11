@@ -1,0 +1,24 @@
+{
+  "name": "Just Watch",
+  "version": "1.0",
+  "description": "Just Watch Actions",
+  "permissions": ["declarativeContent", "storage", "scripting"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.justwatch.com/*"],
+      "js": ["content.js", "globals.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "host_permissions": ["https://www.justwatch.com/*"],
+  "icons": {
+    "16": "images/jw16.png",
+    "32": "images/jw32.png",
+    "48": "images/jw48.png",
+    "128": "images/jw128.png"
+  },
+  "manifest_version": 3
+}
