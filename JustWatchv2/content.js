@@ -1,27 +1,18 @@
 chrome.storage.local.get("props", function (item) {
 	let busy = false;
-	let movieData = {};
+	let movieData = item.props.movieData ?? {};
 	setInterval(() => {
 		if(busy === false) {
 			busy = true;
 			
-			// First, hide all foreign and low rated movies
-			
-			let movieDataKeys = Object.keys(movieData);
-			for(let i = 0; i < movieDataKeys.length; i++) {
-				let key = movieDataKeys[i];
-				
-				// hide if it is a foreign movie or has less than 100,000 reviews
-				let shouldHide = movieData[key].foreign || (movieData[key].count >=0 && movieData[key].count < 100000);
-				
-				if(shouldHide && movieData[key].element.parentElement.style.display !== "none") {
-					movieData[key].element.parentElement.style.display = "none";
-				}
-			}
-			
-			// Second, update the movie data
+			// First, update the movie data
 			
 			let elements = document.getElementsByClassName("title-list-grid__item--link");
+			
+			if(elements.length === 0) {
+				// exit early if we didn't find a movie grid
+				return;
+			}
 			
 			for(let i = 0; i < elements.length; i++) {
 				if(movieData[elements[i].pathname] === undefined) {
@@ -33,6 +24,20 @@ chrome.storage.local.get("props", function (item) {
 					};
 				} else {
 					movieData[elements[i].pathname].element = elements[i];
+				}
+			}
+			
+			// Second, hide all foreign and low rated movies
+			
+			let movieDataKeys = Object.keys(movieData);
+			for(let i = 0; i < movieDataKeys.length; i++) {
+				let key = movieDataKeys[i];
+				
+				// hide if it is a foreign movie or has less than 100,000 reviews
+				let shouldHide = movieData[key].foreign || (movieData[key].count >=0 && movieData[key].count < 100000);
+				
+				if(shouldHide && movieData[key].element?.parentElement && movieData[key].element?.parentElement?.style?.display !== "none") {
+					movieData[key].element.parentElement.style.display = "none";
 				}
 			}
 			
@@ -73,6 +78,16 @@ chrome.storage.local.get("props", function (item) {
 							
 							movieRequest.rating = rating;
 							movieRequest.count = count;
+							
+							try {
+								chrome?.storage?.local?.set({
+									props: {
+										movieData: movieData
+									},
+								});
+							} catch(e) {
+								console.log("Error while storing movie data", e);
+							}
 						}
 						busy = false;
 					}
