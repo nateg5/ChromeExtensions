@@ -1,6 +1,6 @@
 chrome.storage.local.get("props", function (item) {
 	let busy = false;
-	let movieData = item.props.movieData ?? {};
+	let movieData = item?.props?.movieData ?? {};
 	setInterval(() => {
 		if(busy === false) {
 			busy = true;
