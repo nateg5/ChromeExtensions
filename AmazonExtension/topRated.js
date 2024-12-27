@@ -15,6 +15,8 @@ chrome.storage.local.get("props", function (item) {
           .getElementsByClassName(topLevelClass)
           [topLevelIndex].getElementsByClassName("a-icon-alt")
       );
+	  
+	  console.log("ratingElements", ratingElements);
 
       let itemElements = [];
       for (let i = 0; i < ratingElements.length; i++) {
@@ -24,6 +26,8 @@ chrome.storage.local.get("props", function (item) {
         }
         itemElements.push(itemElement);
       }
+	  
+	  console.log("itemElements", itemElements);
 
       let countElements = [];
       for (let i = 0; i < itemElements.length; i++) {
@@ -35,6 +39,8 @@ chrome.storage.local.get("props", function (item) {
         }
         countElements.push(countElement);
       }
+	  
+	  console.log("countElements", countElements);
 
       for (let i = itemElements.length - 1; i >= 0; i--) {
         if (!countElements[i]) {
@@ -48,20 +54,37 @@ chrome.storage.local.get("props", function (item) {
       for (let i = 0; i < ratingElements.length; i++) {
         ratings.push(Number(ratingElements[i].innerHTML.split(" ")[0]));
       }
+	  
+	  console.log("ratings", ratings);
 
       let counts = [];
-      for (let i = 0; i < countElements.length; i++) {
-        counts.push(
-          Number(
-            countElements[i].innerHTML
+	  let stringToInt = (strCount) => {
+		  let tempCount = strCount
               .trim()
               .split(" ")[0]
               .replace(",", "")
               .replace("(", "")
-              .replace(")", "")
+              .replace(")", "");
+		  let periodIndex = tempCount.indexOf(".");
+		  let kIndex = tempCount.indexOf("K");
+		  if(periodIndex >= 0 && kIndex >= 0) {
+			  let zerosToAdd = 4 - (kIndex - periodIndex);
+			  tempCount = tempCount.replace(".", "").replace("K", "");
+			  for(let i = 0; i < zerosToAdd; i++) {
+				  tempCount += "0";
+			  }
+		  }
+		  return tempCount;
+	  };
+      for (let i = 0; i < countElements.length; i++) {
+        counts.push(
+          Number(
+            stringToInt(countElements[i].innerHTML)
           )
         );
       }
+	  
+	  console.log("counts", counts);
 
       let countsSorted = counts.slice().sort((a, b) => a - b);
 
@@ -138,6 +161,12 @@ chrome.storage.local.get("props", function (item) {
     topLevelClass = "s-result-list";
     itemClass = /s-(inner-)?result-item/;
     countClassLevel1 = "a-size-base s-underline-text";
+
+    sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
+	
+	topLevelClass = "s-result-list";
+    itemClass = /s-(inner-)?result-item/;
+    countClassLevel1 = "a-size-small s-underline-text";
 
     sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
 
