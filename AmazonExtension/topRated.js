@@ -1,4 +1,5 @@
 chrome.storage.local.get("props", function (item) {
+  let testClass = "<span class=\"topRated\"></span>";
   let sortProducts = (
     topLevelClass,
     itemClass,
@@ -112,7 +113,8 @@ chrome.storage.local.get("props", function (item) {
           " - #" +
           items[i].rank +
           " - " +
-          items[i].weightedRating.toFixed(2);
+          items[i].weightedRating.toFixed(2) +
+		  testClass;
         if (items[i].countElement.innerHTML != customHTML) {
           items[i].countElement.innerHTML = customHTML;
         }
@@ -198,5 +200,31 @@ chrome.storage.local.get("props", function (item) {
     countClassLevel2 = "a-size-small";
 
     sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
+	
+	topLevelClass = "a-carousel";
+    itemClass = "a-carousel-card";
+    countClassLevel1 = "a-icon-row";
+    countClassLevel2 = "a-size-base a-color-secondary";
+
+    sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
   }, 1000);
+  setTimeout(() => {
+	  if (!item.props.checked) {
+        return;
+      }
+	  let bodyInnerHTML = document.getElementsByTagName("body")[0].innerHTML;
+	  let index = bodyInnerHTML.indexOf(testClass);
+	  var xhttp = new XMLHttpRequest();
+	  xhttp.onreadystatechange = function () {
+		console.log(this);
+	  };
+	  if(index < 0) {
+		console.log("Ruh roh! The extension didn't work!!");
+		xhttp.open("GET", "https://192.168.0.140/Email.php?subject=AmazonTest&message=Failure%0A" + document.location.href, true);
+	  } else {
+		console.log("Extension success!!!");
+		xhttp.open("GET", "https://192.168.0.140/Email.php?subject=AmazonTest&message=Success%0A" + document.location.href, true);
+	  }
+	  xhttp.send();
+  }, 10000);
 });
