@@ -232,11 +232,11 @@ chrome.storage.local.get("props", function (item) {
 		console.log(this);
 	  };
 	  if(index < 0) {
-		console.log("Ruh roh! The extension didn't work!!");
-		xhttp.open("GET", "https://192.168.0.140/Email.php?subject=AmazonTest&message=Failure%0A" + document.location.href, true);
+		console.log("Ruh roh! The extension didn't work!! " + encodeURIComponent(document.location.href));
+		xhttp.open("GET", "https://192.168.0.140/Email.php?subject=AmazonTest&message=Failure%0A" + encodeURIComponent(document.location.href), true);
 	  } else {
-		console.log("Extension success!!!");
-		xhttp.open("GET", "https://192.168.0.140/Email.php?subject=AmazonTest&message=Success%0A" + document.location.href, true);
+		console.log("Extension success!!! " + encodeURIComponent(document.location.href));
+		xhttp.open("GET", "https://192.168.0.140/Email.php?subject=AmazonTest&message=Success%0A" + encodeURIComponent(document.location.href), true);
 	  }
 	  xhttp.send();
   }, 10000);
