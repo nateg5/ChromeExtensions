@@ -1,4 +1,5 @@
 chrome.storage.local.get("props", function (item) {
+  let IS_DEV = false;
   let testClass = "<span class=\"topRated\"></span>";
   let sortProducts = (
     topLevelClass,
@@ -17,7 +18,9 @@ chrome.storage.local.get("props", function (item) {
           [topLevelIndex].getElementsByClassName("a-icon-alt")
       );
 	  
-	  console.log("ratingElements", ratingElements);
+	  if(IS_DEV) {
+	    console.log("ratingElements", ratingElements);
+      }
 
       let itemElements = [];
       for (let i = 0; i < ratingElements.length; i++) {
@@ -28,7 +31,9 @@ chrome.storage.local.get("props", function (item) {
         itemElements.push(itemElement);
       }
 	  
-	  console.log("itemElements", itemElements);
+	  if(IS_DEV) {
+	    console.log("itemElements", itemElements);
+	  }
 
       let countElements = [];
       for (let i = 0; i < itemElements.length; i++) {
@@ -41,7 +46,9 @@ chrome.storage.local.get("props", function (item) {
         countElements.push(countElement);
       }
 	  
-	  console.log("countElements", countElements);
+	  if(IS_DEV) {
+	    console.log("countElements", countElements);
+	  }
 
       for (let i = itemElements.length - 1; i >= 0; i--) {
         if (!countElements[i]) {
@@ -56,7 +63,9 @@ chrome.storage.local.get("props", function (item) {
         ratings.push(Number(ratingElements[i].innerHTML.split(" ")[0]));
       }
 	  
-	  console.log("ratings", ratings);
+	  if(IS_DEV) {
+	    console.log("ratings", ratings);
+	  }
 
       let counts = [];
 	  let stringToInt = (strCount) => {
@@ -85,7 +94,9 @@ chrome.storage.local.get("props", function (item) {
         );
       }
 	  
-	  console.log("counts", counts);
+	  if(IS_DEV) {
+	    console.log("counts", counts);
+	  }
 
       let countsSorted = counts.slice().sort((a, b) => a - b);
 
@@ -144,12 +155,14 @@ chrome.storage.local.get("props", function (item) {
 
         items.reverse();
 
-        console.log("items", items);
+        if(IS_DEV) {
+          console.log("items", items);
+	    }
       }
     }
   };
   setInterval(() => {
-    if (!item.props.checked) {
+    if (item?.props?.checked === false) {
       return;
     }
 
@@ -209,7 +222,7 @@ chrome.storage.local.get("props", function (item) {
     sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
   }, 1000);
   setTimeout(() => {
-	  if (!item.props.checked) {
+	  if (item?.props?.checked === false || !IS_DEV) {
         return;
       }
 	  let bodyInnerHTML = document.getElementsByTagName("body")[0].innerHTML;

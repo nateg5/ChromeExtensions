@@ -3,7 +3,7 @@
 let enabled = document.getElementById("enabled");
 
 chrome.storage.local.get("props", function (item) {
-  enabled.checked = item.props.checked;
+  enabled.checked = item?.props?.checked === false ? false : true;
 });
 
 enabled.onclick = function (element) {
