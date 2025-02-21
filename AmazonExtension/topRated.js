@@ -226,17 +226,17 @@ chrome.storage.local.get("props", function (item) {
         return;
       }
 	  let bodyInnerHTML = document.getElementsByTagName("body")[0].innerHTML;
-	  let index = bodyInnerHTML.indexOf(testClass);
+	  let length = bodyInnerHTML.match(new RegExp(testClass, "g")).length;
 	  var xhttp = new XMLHttpRequest();
 	  xhttp.onreadystatechange = function () {
 		console.log(this);
 	  };
-	  if(index < 0) {
+	  if(length < 20) {
 		console.log("Ruh roh! The extension didn't work!! " + encodeURIComponent(document.location.href));
-		xhttp.open("GET", "https://192.168.0.140/Email.php?subject=AmazonTest&message=Failure%0A" + encodeURIComponent(document.location.href), true);
+		xhttp.open("GET", "https://192.168.0.140/Email.php?subject=AmazonTest&message=Failure%0Alength=" + length + "%0A" + encodeURIComponent(document.location.href), true);
 	  } else {
 		console.log("Extension success!!! " + encodeURIComponent(document.location.href));
-		xhttp.open("GET", "https://192.168.0.140/Email.php?subject=AmazonTest&message=Success%0A" + encodeURIComponent(document.location.href), true);
+		xhttp.open("GET", "https://192.168.0.140/Email.php?subject=AmazonTest&message=Success%0Alength=" + length + "%0A" + encodeURIComponent(document.location.href), true);
 	  }
 	  xhttp.send();
   }, 10000);
