@@ -1,0 +1,32 @@
+{
+  "name": "TripAdvisor",
+  "version": "1.0",
+  "description": "TripAdvisor",
+  "permissions": ["declarativeContent", "storage", "scripting"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.tripadvisor.com/*"],
+      "js": ["realRating.js"]
+    }
+  ],
+  "host_permissions": ["https://*.tripadvisor.com/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/tripadvisor16.png",
+      "32": "images/tripadvisor32.png",
+      "48": "images/tripadvisor48.png",
+      "128": "images/tripadvisor128.png"
+    }
+  },
+  "icons": {
+    "16": "images/tripadvisor16.png",
+    "32": "images/tripadvisor32.png",
+    "48": "images/tripadvisor48.png",
+    "128": "images/tripadvisor128.png"
+  },
+  "manifest_version": 3
+}
