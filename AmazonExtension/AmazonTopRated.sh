@@ -23,7 +23,7 @@ do
 	for (( ; ; ))
 	do
 	
-		sleep 3600
+		sleep 60
 		now=$(date +"%H%M%S");
 		
 		if [ $now -lt "010000" ]; then

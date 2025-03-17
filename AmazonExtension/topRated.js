@@ -1,5 +1,6 @@
 chrome.storage.local.get("props", function (item) {
   let IS_DEV = false;
+  let SHOW_LOGS = false;
   let testClass = "<span class=\"topRated\"></span>";
   let sortProducts = (
     topLevelClass,
@@ -18,7 +19,7 @@ chrome.storage.local.get("props", function (item) {
           [topLevelIndex].getElementsByClassName("a-icon-alt")
       );
 	  
-	  if(IS_DEV) {
+	  if(SHOW_LOGS) {
 	    console.log("ratingElements", ratingElements);
       }
 
@@ -31,7 +32,7 @@ chrome.storage.local.get("props", function (item) {
         itemElements.push(itemElement);
       }
 	  
-	  if(IS_DEV) {
+	  if(SHOW_LOGS) {
 	    console.log("itemElements", itemElements);
 	  }
 
@@ -46,7 +47,7 @@ chrome.storage.local.get("props", function (item) {
         countElements.push(countElement);
       }
 	  
-	  if(IS_DEV) {
+	  if(SHOW_LOGS) {
 	    console.log("countElements", countElements);
 	  }
 
@@ -63,7 +64,7 @@ chrome.storage.local.get("props", function (item) {
         ratings.push(Number(ratingElements[i].innerHTML.split(" ")[0]));
       }
 	  
-	  if(IS_DEV) {
+	  if(SHOW_LOGS) {
 	    console.log("ratings", ratings);
 	  }
 
@@ -94,7 +95,7 @@ chrome.storage.local.get("props", function (item) {
         );
       }
 	  
-	  if(IS_DEV) {
+	  if(SHOW_LOGS) {
 	    console.log("counts", counts);
 	  }
 
@@ -155,7 +156,7 @@ chrome.storage.local.get("props", function (item) {
 
         items.reverse();
 
-        if(IS_DEV) {
+        if(SHOW_LOGS) {
           console.log("items", items);
 	    }
       }
@@ -226,7 +227,7 @@ chrome.storage.local.get("props", function (item) {
         return;
       }
 	  let bodyInnerHTML = document.getElementsByTagName("body")[0].innerHTML;
-	  let length = bodyInnerHTML.match(new RegExp(testClass, "g")).length;
+	  let length = (bodyInnerHTML.match(new RegExp(testClass, "g")) || []).length;
 	  var xhttp = new XMLHttpRequest();
 	  xhttp.onreadystatechange = function () {
 		console.log(this);
