@@ -1,6 +1,7 @@
 chrome.storage.local.get("props", function (item) {
   let IS_DEV = false;
   let SHOW_LOGS = false;
+  let SHOW_WEIGHTED_RATINGS = false;
   let testClass = "<span class=\"topRated\"></span>";
   let sortProducts = (
     topLevelClass,
@@ -113,6 +114,7 @@ chrome.storage.local.get("props", function (item) {
           countElement: countElements[i],
           rating: ratings[i],
           count: counts[i],
+          countOriginal: countElements[i].innerHTML.trim().split(" ")[0],
           weightedRating: (ratings[i] * counts[i]) / (counts[i] + weight),
         });
       }
@@ -120,13 +122,15 @@ chrome.storage.local.get("props", function (item) {
 
       for (let i = 0; i < items.length; i++) {
         items[i].rank = i + 1;
-        let customHTML =
-          items[i].count +
+        let customHTML = items[i].countOriginal + " - " + items[i].rating + testClass;
+        if(SHOW_WEIGHTED_RATINGS) {
+          customHTML = items[i].count +
           " - #" +
           items[i].rank +
           " - " +
           items[i].weightedRating.toFixed(2) +
 		  testClass;
+	    }
         if (items[i].countElement.innerHTML != customHTML) {
           items[i].countElement.innerHTML = customHTML;
         }
