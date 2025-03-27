@@ -1,5 +1,5 @@
 "use strict";
 
-chrome.runtime.onInstalled.addListener(function () {
-  //chrome.action.disable();
-});
+/*chrome.runtime.onInstalled.addListener(function () {
+  chrome.action.disable();
+});*/

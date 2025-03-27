@@ -1,8 +1,8 @@
 {
   "name": "Amazon Top Rated",
   "version": "1.0",
-  "description": "Amazon Top Rated Actions",
-  "permissions": ["declarativeContent", "storage", "scripting"],
+  "description": "Easily and quickly find the highest rated and most reviewed products on Amazon.",
+  "permissions": ["storage"],
   "background": {
     "service_worker": "background.js"
   },
