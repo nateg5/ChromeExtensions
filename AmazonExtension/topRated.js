@@ -197,6 +197,13 @@ chrome.storage.local.get("props", function (item) {
 
     sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
 
+    topLevelClass =
+      "_octopus-search-result-card_style_apbSearchResultsContainer__bCqjb";
+    itemClass = "_octopus-search-result-card_style_apbSearchResultItem__2-mx4";
+    countClassLevel1 = "a-size-small s-underline-text";
+
+    sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
+
     topLevelClass = "octopus-pc-card-list";
     itemClass = "octopus-pc-item ";
     countClassLevel1 = "octopus-pc-asin-review-star";
