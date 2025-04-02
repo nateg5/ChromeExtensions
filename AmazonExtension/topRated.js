@@ -225,6 +225,20 @@ chrome.storage.local.get("props", function (item) {
     countClassLevel2 = "a-size-base a-color-secondary";
 
     sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
+	
+	topLevelClass = "a-carousel";
+    itemClass = "a-carousel-card";
+    countClassLevel1 = "dcl-product-rating";
+    countClassLevel2 = "dcl-product-rating-count";
+
+    sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
+	
+	topLevelClass = "dcl-html-grid";
+    itemClass = "s-latency-cf-section";
+    countClassLevel1 = "a-row a-size-small";
+    countClassLevel2 = "a-size-base s-underline-text";
+
+    sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
   }, 1000);
   setTimeout(() => {
 	  if (item?.props?.checked === false || !IS_DEV) {
