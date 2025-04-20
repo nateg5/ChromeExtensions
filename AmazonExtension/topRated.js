@@ -85,6 +85,11 @@ chrome.storage.local.get("props", function (item) {
 			  for(let i = 0; i < zerosToAdd; i++) {
 				  tempCount += "0";
 			  }
+		  } else if(periodIndex < 0 && kIndex >= 0) {
+			  tempCount = tempCount.replace("K", "000");
+		  }
+		  if(SHOW_LOGS && isNaN(tempCount)) {
+			  console.log("NaN for strCount = " + strCount);
 		  }
 		  return tempCount;
 	  };
