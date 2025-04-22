@@ -2,12 +2,14 @@ chrome.storage.local.get("props", function (item) {
   let IS_DEV = false;
   let SHOW_LOGS = false;
   let SHOW_WEIGHTED_RATINGS = false;
+  let NAN_ERROR = "";
   let testClass = "<span class=\"topRated\"></span>";
   let sortProducts = (
     topLevelClass,
     itemClass,
     countClassLevel1,
-    countClassLevel2
+    countClassLevel2,
+	ratingElementsClass = "a-icon-alt"
   ) => {
     for (
       let topLevelIndex = 0;
@@ -17,7 +19,7 @@ chrome.storage.local.get("props", function (item) {
       let ratingElements = Array.from(
         document
           .getElementsByClassName(topLevelClass)
-          [topLevelIndex].getElementsByClassName("a-icon-alt")
+          [topLevelIndex].getElementsByClassName(ratingElementsClass)
       );
 	  
 	  if(SHOW_LOGS) {
@@ -88,8 +90,11 @@ chrome.storage.local.get("props", function (item) {
 		  } else if(periodIndex < 0 && kIndex >= 0) {
 			  tempCount = tempCount.replace("K", "000");
 		  }
-		  if(SHOW_LOGS && isNaN(tempCount)) {
-			  console.log("NaN for strCount = " + strCount);
+		  if(isNaN(tempCount)) {
+			  NAN_ERROR = strCount;
+			  if(SHOW_LOGS) {
+				console.log("NaN for strCount = " + strCount);
+			  }
 		  }
 		  return tempCount;
 	  };
@@ -258,6 +263,14 @@ chrome.storage.local.get("props", function (item) {
     countClassLevel2 = "a-size-small s-underline-text";
 
     sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
+	
+	topLevelClass = "ProductGrid__grid__f5oba";
+	itemClass = "ProductGridItem__itemOuter__KUtvv";
+	countClassLevel1 = "ProductGridItem__reviewCount__laMDa";
+	countClassLevel2 = null;
+	ratingElementsClass = "icon-alt-text";
+	
+	sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2, ratingElementsClass);
   }, 1000);
   setTimeout(() => {
 	  if (item?.props?.checked === false || !IS_DEV) {
@@ -272,6 +285,9 @@ chrome.storage.local.get("props", function (item) {
 	  if(length < 20) {
 		console.log("Ruh roh! The extension didn't work!! " + encodeURIComponent(document.location.href));
 		xhttp.open("GET", "https://192.168.0.140/Email.php?subject=AmazonTest&message=Failure%0Alength=" + length + "%0A" + encodeURIComponent(document.location.href), true);
+	  } else if(NAN_ERROR != "") {
+		console.log("Ruh roh! The extension didn't work!! " + encodeURIComponent(document.location.href));
+		xhttp.open("GET", "https://192.168.0.140/Email.php?subject=AmazonTest&message=Failure%0Alength=" + length + "%0ANAN_ERROR=" + NAN_ERROR + "%0A" + encodeURIComponent(document.location.href), true);
 	  } else {
 		console.log("Extension success!!! " + encodeURIComponent(document.location.href));
 		xhttp.open("GET", "https://192.168.0.140/Email.php?subject=AmazonTest&message=Success%0Alength=" + length + "%0A" + encodeURIComponent(document.location.href), true);

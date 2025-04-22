@@ -121,5 +121,22 @@ do
 		fi
 	
 	done
+
+	for (( ; ; ))
+	do
+	
+		sleep 60
+		now=$(date +"%H%M%S");
+		
+		if [ $now -lt "010000" ]; then
+		
+			chromium "https://www.amazon.com/stores/page/F5946BC3-07AA-4341-9E2F-B6DBA096D987" &
+			sleep 60
+			pkill chromium
+			break
+		
+		fi
+	
+	done
 	
 done
