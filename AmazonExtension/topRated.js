@@ -271,6 +271,13 @@ chrome.storage.local.get("props", function (item) {
 	ratingElementsClass = "icon-alt-text";
 	
 	sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2, ratingElementsClass);
+	
+	topLevelClass = "ProductGrid__grid__f5oba";
+	itemClass = "ProductUIRender__grid-item-v2__Ipp8M";
+	countClassLevel1 = "a-size-small puis-normal-weight-text s-underline-text";
+	countClassLevel2 = null;
+	
+	sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
   }, 1000);
   setTimeout(() => {
 	  if (item?.props?.checked === false || !IS_DEV) {
