@@ -1,0 +1,32 @@
+{
+  "name": "Fidelity Extension",
+  "version": "1",
+  "description": "Auto calculates the premium per day on the Fidelity option strategy builder page.",
+  "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.fidelity.com/*"],
+      "js": ["fidelity.js"]
+    }
+  ],
+  "host_permissions": ["https://*.fidelity.com/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/fidelity16.png",
+      "32": "images/fidelity32.png",
+      "48": "images/fidelity48.png",
+      "128": "images/fidelity128.png"
+    }
+  },
+  "icons": {
+    "16": "images/fidelity16.png",
+    "32": "images/fidelity32.png",
+    "48": "images/fidelity48.png",
+    "128": "images/fidelity128.png"
+  },
+  "manifest_version": 3
+}
