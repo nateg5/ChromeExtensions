@@ -31,7 +31,7 @@ chrome.storage.local.get("props", function (item) {
 		
 		let dteAdjustment = today.getDay() - 1;
 		let adjustedDTE = dte + dteAdjustment;
-		let tradingDTE = ((adjustedDTE - (adjustedDTE % 7)) * (5 / 7)) + (adjustedDTE % 7) - dteAdjustment;
+		let tradingDTE = (Math.floor(adjustedDTE / 7) * 5) + (adjustedDTE % 7) - dteAdjustment;
 		
 		console.log("tradingDTE", tradingDTE);
 		
