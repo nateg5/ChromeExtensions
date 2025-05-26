@@ -29,10 +29,16 @@ chrome.storage.local.get("props", function (item) {
 		console.log("dte", dte);
 		console.log("premium", premium);
 		
-		if(isNaN(dte) || isNaN(premium)) {
+		let dteAdjustment = today.getDay() - 1;
+		let adjustedDTE = dte + dteAdjustment;
+		let tradingDTE = ((adjustedDTE - (adjustedDTE % 7)) * (5 / 7)) + (adjustedDTE % 7) - dteAdjustment;
+		
+		console.log("tradingDTE", tradingDTE);
+		
+		if(isNaN(dte) || isNaN(tradingDTE) || isNaN(premium)) {
 			selectedRow.lastElementChild.innerHTML = "--";
 		} else {
-			selectedRow.lastElementChild.innerHTML = "$" + Math.round((premium / dte) * 100) + "/day";
+			selectedRow.lastElementChild.innerHTML = "$" + Math.round((premium / tradingDTE) * 100) + "/day";
 		}
 	}
   }, 1000);
