@@ -38,7 +38,13 @@ chrome.storage.local.get("props", function (item) {
 		if(isNaN(dte) || isNaN(tradingDTE) || isNaN(premium)) {
 			selectedRow.lastElementChild.innerHTML = "--";
 		} else {
-			selectedRow.lastElementChild.innerHTML = "$" + Math.round((premium / tradingDTE) * 100) + "/day";
+			let ppd = (premium / tradingDTE) * 100;
+			if(ppd > 10) {
+				ppd = Math.round(ppd);
+			} else {
+				ppd = ppd.toFixed(2);
+			}
+			selectedRow.lastElementChild.innerHTML = "$" + ppd + "/day";
 		}
 	}
   }, 1000);
