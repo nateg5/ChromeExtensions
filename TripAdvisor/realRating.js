@@ -4,38 +4,50 @@ chrome.storage.local.get("props", function (item) {
   
   let realRatingInterval = setInterval(() => {
 	  
-	  if(document.getElementsByClassName("realRating").length > 0) {
+	  let items = document.querySelectorAll('[data-automation="WebPresentation_SingleFlexCardSection"]');
+	  
+	  if(document.getElementsByClassName("realRating").length === items.length) {
 		  return;
 	  }
 	  
-	  let reviews = document.querySelectorAll('[aria-label="Filter reviews"]')[0].getElementsByClassName("biGQs _P pZUbB osNWb");
-	  
-	  console.log("reviews", reviews);
-	  
-	  let reviewsArray = [];
-	  
-	  for(let i = 0; i < reviews.length; i++) {
-		  reviewsArray.push(Number(reviews[i].innerHTML.replace(",", "")));
+	  let itemArray = [];
+	  for(let i = 0; i < items.length; i++) {
+		  let rating = Number(items[i].querySelectorAll('[data-automation="bubbleRatingValue"]')[0].innerText);
+		  let reviews = Number(items[i].querySelectorAll('[data-automation="bubbleLabel"]')[0].innerText.replace(",", ""));
+		  
+		  //console.log("", rating, reviews);
+		  
+		  itemArray.push({
+			  item: items[i],
+			  rating: rating,
+			  reviews: reviews
+		  });
 	  }
 	  
-	  console.log("reviewsArray", reviewsArray);
+	  itemArray.sort((a, b) => {
+		  return b.reviews - a.reviews;
+	  });
 	  
-	  if(!isNaN(reviewsArray[0])) {
+	  let weight = itemArray[itemArray.length / 2].reviews / 10;
+	  
+	  for(let i = 0; i < itemArray.length; i++) {
+		  let item = itemArray[i];
+		  item.weightedRating = (item.rating * item.reviews) / (item.reviews + weight);
 		  
-		  let ratingTotal = (reviewsArray[0] * 5) + (reviewsArray[1] * 4) + (reviewsArray[2] * 3) + (reviewsArray[3] * 2) + (reviewsArray[4] * 1);
-		  let ratingCount = reviewsArray[0] + reviewsArray[1] + reviewsArray[2] + reviewsArray[3] + reviewsArray[4];
-		  
-		  let realRating = ratingTotal / ratingCount;
-		  
-		  console.log("realRating", realRating.toFixed(2));
-		  
-		  let ratingElement = document.querySelectorAll('[href="#REVIEWS"]')[0].getElementsByClassName("biGQs _P XWJSj Wb")[0].childNodes[0];
-		  
-		  console.log("ratingElement", ratingElement);
-		  
-		  ratingElement.innerHTML = "<span class='realRating'>" + realRating.toFixed(2) + "</span>&nbsp;&nbsp;&nbsp;" + ratingElement.innerHTML;
-		  
-		  //clearInterval(realRatingInterval);
+		  item.item.querySelectorAll('[data-automation="bubbleLabel"]')[0].innerHTML += " - <span class='realRating'>" + item.weightedRating.toFixed(2) + "</span>";
+	  }
+	  
+	  itemArray.sort((a, b) => {
+		  return a.weightedRating - b.weightedRating;
+	  });
+	  
+	  //console.log("", itemArray);
+	  
+	  for(let i = 1; i < itemArray.length; i++) {
+		  let item1 = itemArray[i-1];
+		  let item2 = itemArray[i];
+		  //console.log("item1", item1);
+		  item1.item.parentElement.insertBefore(item2.item, item1.item);
 	  }
   }, 1000);
 });
