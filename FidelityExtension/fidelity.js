@@ -33,6 +33,8 @@ chrome.storage.local.get("props", function (item) {
 		let adjustedDTE = dte + dteAdjustment;
 		let tradingDTE = (Math.floor(adjustedDTE / 7) * 5) + (adjustedDTE % 7) - dteAdjustment;
 		
+		//tradingDTE -= (((new Date()).getHours() - 8) / 7);
+		
 		console.log("tradingDTE", tradingDTE);
 		
 		if(isNaN(dte) || isNaN(tradingDTE) || isNaN(premium)) {
