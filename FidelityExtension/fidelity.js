@@ -6,6 +6,7 @@ chrome.storage.local.get("props", function (item) {
     }
 	
 	let expirationText = document.getElementsByClassName("form-expiration")[0]?.getElementsByClassName("binding-val")[0]?.innerText || undefined;
+	expirationText = expirationText.replace(" AM", "").replace(" PM", "");
 
     let selectedRow = document.getElementsByClassName("grid-row selected")[0] || undefined;
     let premiumText = selectedRow?.getElementsByTagName("div")[1]?.innerText || undefined;
