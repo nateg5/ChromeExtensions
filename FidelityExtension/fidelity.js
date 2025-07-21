@@ -6,7 +6,9 @@ chrome.storage.local.get("props", function (item) {
     }
 	
 	let expirationText = document.getElementsByClassName("form-expiration")[0]?.getElementsByClassName("binding-val")[0]?.innerText || undefined;
-	expirationText = expirationText.replace(" AM", "").replace(" PM", "");
+	if(expirationText) {
+		expirationText = expirationText.replace(" AM", "").replace(" PM", "");
+	}
 
     let selectedRow = document.getElementsByClassName("grid-row selected")[0] || undefined;
     let premiumText = selectedRow?.getElementsByTagName("div")[1]?.innerText || undefined;
@@ -43,7 +45,7 @@ chrome.storage.local.get("props", function (item) {
 		} else {
 			let ppd = (premium / tradingDTE) * 100;
 			if(ppd > 10) {
-				ppd = Math.round(ppd);
+				ppd = Math.floor(ppd);
 			} else {
 				ppd = ppd.toFixed(2);
 			}
