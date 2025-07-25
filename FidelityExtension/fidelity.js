@@ -9,47 +9,51 @@ chrome.storage.local.get("props", function (item) {
 	if(expirationText) {
 		expirationText = expirationText.replace(" AM", "").replace(" PM", "");
 	}
-
-    let selectedRow = document.getElementsByClassName("grid-row selected")[0] || undefined;
-    let premiumText = selectedRow?.getElementsByTagName("div")[1]?.innerText || undefined;
 	
-	console.log("expirationText", expirationText);
-	console.log("premiumText", premiumText);
+	let gridRows = document.getElementsByClassName("osb-grid")[0]?.getElementsByClassName("grid-row") || undefined;
 	
-	if(selectedRow && expirationText && premiumText) {
-		let today = new Date();
-		today.setHours(0);
-		today.setMinutes(0);
-		today.setSeconds(0);
-		let expirationDate = new Date(expirationText);
-		expirationDate.setHours(0);
-		expirationDate.setMinutes(0);
-		expirationDate.setSeconds(0);
+	for(let i = 0; gridRows && i < gridRows.length; i++) {
+		let selectedRow = gridRows[i] || undefined;
+		let premiumText = selectedRow?.getElementsByTagName("div")[1]?.innerText || undefined;
 		
-		let dte = Math.round((expirationDate - today)/(24*60*60*1000)) + 1;
-		let premium = Number(premiumText.replace("$", "").replace(" ", ""));
+		console.log("expirationText", expirationText);
+		console.log("premiumText", premiumText);
 		
-		console.log("dte", dte);
-		console.log("premium", premium);
-		
-		let dteAdjustment = today.getDay() - 1;
-		let adjustedDTE = dte + dteAdjustment;
-		let tradingDTE = (Math.floor(adjustedDTE / 7) * 5) + (adjustedDTE % 7) - dteAdjustment;
-		
-		//tradingDTE -= (((new Date()).getHours() - 8) / 7);
-		
-		console.log("tradingDTE", tradingDTE);
-		
-		if(isNaN(dte) || isNaN(tradingDTE) || isNaN(premium)) {
-			selectedRow.lastElementChild.innerHTML = "--";
-		} else {
-			let ppd = (premium / tradingDTE) * 100;
-			if(ppd > 10) {
-				ppd = Math.floor(ppd);
+		if(selectedRow && expirationText && premiumText) {
+			let today = new Date();
+			today.setHours(0);
+			today.setMinutes(0);
+			today.setSeconds(0);
+			let expirationDate = new Date(expirationText);
+			expirationDate.setHours(0);
+			expirationDate.setMinutes(0);
+			expirationDate.setSeconds(0);
+			
+			let dte = Math.round((expirationDate - today)/(24*60*60*1000)) + 1;
+			let premium = Number(premiumText.replace("$", "").replace(" ", ""));
+			
+			console.log("dte", dte);
+			console.log("premium", premium);
+			
+			let dteAdjustment = today.getDay() - 1;
+			let adjustedDTE = dte + dteAdjustment;
+			let tradingDTE = (Math.floor(adjustedDTE / 7) * 5) + (adjustedDTE % 7) - dteAdjustment;
+			
+			//tradingDTE -= (((new Date()).getHours() - 8) / 7);
+			
+			console.log("tradingDTE", tradingDTE);
+			
+			if(isNaN(dte) || isNaN(tradingDTE) || isNaN(premium)) {
+				selectedRow.children[2].innerHTML = "--";
 			} else {
-				ppd = ppd.toFixed(2);
+				let ppd = (premium / tradingDTE) * 100;
+				if(ppd > 10) {
+					ppd = Math.floor(ppd);
+				} else {
+					ppd = ppd.toFixed(2);
+				}
+				selectedRow.children[2].innerHTML = "$" + ppd + "/day";
 			}
-			selectedRow.lastElementChild.innerHTML = "$" + ppd + "/day";
 		}
 	}
   }, 1000);
