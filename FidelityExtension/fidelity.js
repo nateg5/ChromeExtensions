@@ -28,12 +28,7 @@ chrome.storage.local.get("props", function (item) {
 			if(isNaN(dte) || isNaN(tradingDTE) || isNaN(premium)) {
 				selectedRow.children[2].innerHTML = "--";
 			} else {
-				let ppd = (premium * 100) / tradingDTE;
-				if(ppd > 10) {
-					ppd = Math.floor(ppd);
-				} else {
-					ppd = ppd.toFixed(2);
-				}
+				let ppd = calculatePPD(premium, tradingDTE);
 				selectedRow.children[2].innerHTML = "$" + ppd + "/day";
 			}
 		}
@@ -66,12 +61,7 @@ chrome.storage.local.get("props", function (item) {
 				if(isNaN(dte) || isNaN(tradingDTE) || isNaN(premium)) {
 					selectedRow.children[6].innerHTML = "--";
 				} else {
-					let ppd = (premium * 100) / tradingDTE;
-					if(ppd > 10) {
-						ppd = Math.floor(ppd);
-					} else {
-						ppd = ppd.toFixed(2);
-					}
+					let ppd = calculatePPD(premium, tradingDTE);
 					selectedRow.children[6].innerHTML = "$" + ppd + "/day";
 				}
 			}
@@ -104,5 +94,15 @@ chrome.storage.local.get("props", function (item) {
 		console.log("tradingDTE", tradingDTE);
 		
 		return {dte, tradingDTE, premium};
+  };
+  let calculatePPD = (premium, tradingDTE) => {
+		let ppd = (premium * 100) / tradingDTE;
+		if(ppd > 10) {
+			ppd = Math.floor(ppd);
+		} else {
+			ppd = ppd.toFixed(2);
+		}
+		
+		return ppd;
   };
 });
