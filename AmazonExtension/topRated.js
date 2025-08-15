@@ -183,10 +183,15 @@ chrome.storage.local.get("props", function (item) {
 
     let topLevelClass = "p13n-gridRow";
     let itemClass = "a-column";
-    let countClassLevel1 = "a-size-small";
-    let countClassLevel2 = null;
+    let countClassLevel1 = "a-icon-row";
+    let countClassLevel2 = "a-size-small";
 
     sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
+	
+	countClassLevel1 = "a-icon-star-mini";
+    countClassLevel2 = null;
+	
+	sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
 
     topLevelClass = "s-result-list";
     itemClass = /s-(inner-)?result-item/;

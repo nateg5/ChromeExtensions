@@ -138,5 +138,56 @@ do
 		fi
 	
 	done
+
+	for (( ; ; ))
+	do
+	
+		sleep 60
+		now=$(date +"%H%M%S");
+		
+		if [ $now -lt "010000" ]; then
+		
+			chromium "https://www.amazon.com/best-sellers-books-Amazon/zgbs/books/ref=zg_bs_nav_books_0" &
+			sleep 60
+			pkill chromium
+			break
+		
+		fi
+	
+	done
+
+	for (( ; ; ))
+	do
+	
+		sleep 60
+		now=$(date +"%H%M%S");
+		
+		if [ $now -lt "010000" ]; then
+		
+			chromium "https://www.amazon.com/Best-Sellers-Books-Christian-Books-Bibles/zgbs/books/12290/ref=zg_bs_nav_books_1" &
+			sleep 60
+			pkill chromium
+			break
+		
+		fi
+	
+	done
+
+	for (( ; ; ))
+	do
+	
+		sleep 60
+		now=$(date +"%H%M%S");
+		
+		if [ $now -lt "010000" ]; then
+		
+			chromium "https://www.amazon.com/Best-Sellers-Books-Christian-Bibles/zgbs/books/12059/ref=zg_bs_nav_books_3_12290" &
+			sleep 60
+			pkill chromium
+			break
+		
+		fi
+	
+	done
 	
 done
