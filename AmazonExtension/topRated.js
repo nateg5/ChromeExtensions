@@ -204,6 +204,12 @@ chrome.storage.local.get("props", function (item) {
     countClassLevel1 = "a-size-small s-underline-text";
 
     sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
+	
+	topLevelClass = "s-result-list";
+    itemClass = /s-(inner-)?result-item/;
+    countClassLevel1 = "a-size-mini s-underline-text";
+
+    sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
 
     topLevelClass =
       "_octopus-search-result-card_style_apbSearchResultsContainer__bCqjb";
@@ -265,6 +271,13 @@ chrome.storage.local.get("props", function (item) {
 	topLevelClass = "dcl-html-grid";
     itemClass = "s-latency-cf-section";
     countClassLevel1 = "a-row a-size-small";
+    countClassLevel2 = "a-size-mini s-underline-text";
+
+    sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
+	
+	topLevelClass = "dcl-html-grid";
+    itemClass = "s-latency-cf-section";
+    countClassLevel1 = "a-row a-size-small";
     countClassLevel2 = "a-size-small s-underline-text";
 
     sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
@@ -280,6 +293,13 @@ chrome.storage.local.get("props", function (item) {
 	topLevelClass = "ProductGrid__grid__f5oba";
 	itemClass = "ProductUIRender__grid-item-v2__Ipp8M";
 	countClassLevel1 = "a-size-small puis-normal-weight-text s-underline-text";
+	countClassLevel2 = null;
+	
+	sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
+	
+	topLevelClass = "ProductGrid__grid__f5oba";
+	itemClass = "ProductUIRender__grid-item-v2__Ipp8M";
+	countClassLevel1 = "a-size-mini puis-normal-weight-text s-underline-text";
 	countClassLevel2 = null;
 	
 	sortProducts(topLevelClass, itemClass, countClassLevel1, countClassLevel2);
