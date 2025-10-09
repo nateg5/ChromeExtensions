@@ -38,6 +38,33 @@ chrome.storage.local.get("props", function (item) {
 	  if(SHOW_LOGS) {
 	    console.log("itemElements", itemElements);
 	  }
+	  
+	  let stringToInt = (strCount, reportError = true) => {
+		  let tempCount = strCount
+              .trim()
+              .split(" ")[0]
+              .replace(",", "")
+              .replace("(", "")
+              .replace(")", "");
+		  let periodIndex = tempCount.indexOf(".");
+		  let kIndex = tempCount.indexOf("K");
+		  if(periodIndex >= 0 && kIndex >= 0) {
+			  let zerosToAdd = 4 - (kIndex - periodIndex);
+			  tempCount = tempCount.replace(".", "").replace("K", "");
+			  for(let i = 0; i < zerosToAdd; i++) {
+				  tempCount += "0";
+			  }
+		  } else if(periodIndex < 0 && kIndex >= 0) {
+			  tempCount = tempCount.replace("K", "000");
+		  }
+		  if(isNaN(tempCount) && reportError) {
+			  NAN_ERROR = strCount;
+			  if(SHOW_LOGS) {
+				console.log("NaN for strCount = " + strCount);
+			  }
+		  }
+		  return tempCount;
+	  };
 
       let countElements = [];
       for (let i = 0; i < itemElements.length; i++) {
@@ -47,6 +74,9 @@ chrome.storage.local.get("props", function (item) {
           countElement =
             countElement.getElementsByClassName(countClassLevel2)[0];
         }
+		if(countElement && isNaN(stringToInt(countElement.innerHTML, false))) {
+			countElement = undefined;
+		}
         countElements.push(countElement);
       }
 	  
@@ -72,32 +102,6 @@ chrome.storage.local.get("props", function (item) {
 	  }
 
       let counts = [];
-	  let stringToInt = (strCount) => {
-		  let tempCount = strCount
-              .trim()
-              .split(" ")[0]
-              .replace(",", "")
-              .replace("(", "")
-              .replace(")", "");
-		  let periodIndex = tempCount.indexOf(".");
-		  let kIndex = tempCount.indexOf("K");
-		  if(periodIndex >= 0 && kIndex >= 0) {
-			  let zerosToAdd = 4 - (kIndex - periodIndex);
-			  tempCount = tempCount.replace(".", "").replace("K", "");
-			  for(let i = 0; i < zerosToAdd; i++) {
-				  tempCount += "0";
-			  }
-		  } else if(periodIndex < 0 && kIndex >= 0) {
-			  tempCount = tempCount.replace("K", "000");
-		  }
-		  if(isNaN(tempCount)) {
-			  NAN_ERROR = strCount;
-			  if(SHOW_LOGS) {
-				console.log("NaN for strCount = " + strCount);
-			  }
-		  }
-		  return tempCount;
-	  };
       for (let i = 0; i < countElements.length; i++) {
         counts.push(
           Number(
