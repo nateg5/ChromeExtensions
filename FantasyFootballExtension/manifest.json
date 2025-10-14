@@ -1,0 +1,32 @@
+{
+  "name": "Fantasy Football Extension",
+  "version": "1",
+  "description": "Does some fantasy football calculations",
+  "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.yahoo.com/*"],
+      "js": ["fantasyfootball.js"]
+    }
+  ],
+  "host_permissions": ["https://*.yahoo.com/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/yahoo16.png",
+      "32": "images/yahoo32.png",
+      "48": "images/yahoo48.png",
+      "128": "images/yahoo128.png"
+    }
+  },
+  "icons": {
+    "16": "images/yahoo16.png",
+    "32": "images/yahoo32.png",
+    "48": "images/yahoo48.png",
+    "128": "images/yahoo128.png"
+  },
+  "manifest_version": 3
+}
