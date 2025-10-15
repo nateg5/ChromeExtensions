@@ -1,0 +1,32 @@
+{
+  "name": "NBA Extension",
+  "version": "1",
+  "description": "Filters NBA Game Schedule",
+  "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.nba.com/*"],
+      "js": ["nba.js"]
+    }
+  ],
+  "host_permissions": ["https://*.nba.com/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/nba16.png",
+      "32": "images/nba32.png",
+      "48": "images/nba48.png",
+      "128": "images/nba128.png"
+    }
+  },
+  "icons": {
+    "16": "images/nba16.png",
+    "32": "images/nba32.png",
+    "48": "images/nba48.png",
+    "128": "images/nba128.png"
+  },
+  "manifest_version": 3
+}
