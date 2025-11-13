@@ -29,7 +29,12 @@ chrome.storage.local.get("props", function (item) {
 				selectedRow.children[2].innerHTML = "--";
 			} else {
 				let ppd = calculatePPD(premium, tradingDTE);
-				selectedRow.children[2].innerHTML = "$" + ppd + "/day";
+				let strike = Number(selectedRow.children[0].innerText);
+				let backgroundColor = "#ffffff";
+				if(ppd / strike > .1) {
+					backgroundColor = "#cde1c9";
+				}
+				selectedRow.children[2].innerHTML = "<div style='background-color: " + backgroundColor + "; padding-left: 10px;'>$" + ppd + "/day</div>";
 			}
 		}
 	}
@@ -62,7 +67,12 @@ chrome.storage.local.get("props", function (item) {
 					selectedRow.children[6].innerHTML = "--";
 				} else {
 					let ppd = calculatePPD(premium, tradingDTE);
-					selectedRow.children[6].innerHTML = "$" + ppd + "/day";
+					let strike = Number(selectedRow.children[0].innerText);
+					let backgroundColor = "#ffffff";
+					if(ppd / strike > .1) {
+						backgroundColor = "#cde1c9";
+					}
+					selectedRow.children[6].innerHTML = "<div style='background-color: " + backgroundColor + ";'>$" + ppd + "/day</div>";
 				}
 			}
 		}
