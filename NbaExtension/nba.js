@@ -17,6 +17,8 @@ chrome.storage.local.get("props", function (item) {
 			gameDivs[i].innerHTML.indexOf("abc.svg") < 0
 			) {
 			gameDivs[i].style.display = "none";
+		} else {
+			gameDivs[i].style.display = "flex";
 		}
 	}
   }, 1000);
