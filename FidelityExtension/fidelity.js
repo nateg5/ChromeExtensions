@@ -32,6 +32,12 @@ chrome.storage.local.get("props", function (item) {
 					backgroundColor = "#cde1c9";
 				}
 				selectedRow.children[2].innerHTML = "<div style='background-color: " + backgroundColor + "; padding-left: 10px;'>$" + ppd + "/day</div>";
+				
+				backgroundColor = "#ffffff";
+				if(premium * 1000 > strike) {
+					backgroundColor = "#cde1c9";
+				}
+				selectedRow.children[1].innerHTML = "<div style='background-color: " + backgroundColor + "; padding-left: 10px;'><span _ngcontent-ng-c995348536 class='slo-font-style'>" + premiumText + "</span></div>";
 			}
 		}
 	}
@@ -67,6 +73,12 @@ chrome.storage.local.get("props", function (item) {
 						backgroundColor = "#cde1c9";
 					}
 					selectedRow.children[6].innerHTML = "<div style='background-color: " + backgroundColor + ";'>$" + ppd + "/day</div>";
+				
+					backgroundColor = "#ffffff";
+					if(premium * 1000 > strike) {
+						backgroundColor = "#cde1c9";
+					}
+					selectedRow.children[5].getElementsByTagName("a")[0].style.backgroundColor = backgroundColor;
 				}
 			}
 		}
