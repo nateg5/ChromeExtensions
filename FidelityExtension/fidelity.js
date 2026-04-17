@@ -94,13 +94,17 @@ chrome.storage.local.get("props", function (item) {
 		let rightRows = document.getElementsByClassName("ag-center-cols-container")[0]?.getElementsByClassName("ag-row");
 		
 		let optionIndexes = [];
+		let optionStrikes = [];
 		let optionDates = [];
 		for(let i = 0; leftRows && i < leftRows.length; i++) {
+			let name = leftRows[i].getElementsByClassName("posweb-cell-symbol-name_container")[0];
 			let description = leftRows[i].getElementsByClassName("posweb-cell-symbol-description")[0];
 			if(description) {
+				let strike = Number(name.innerHTML.split(" ")[1]);
 				let date = new Date(description.innerHTML);
-				if(date != "Invalid Date") {
+				if(date != "Invalid Date" && !isNaN(strike)) {
 					optionIndexes.push(i);
+					optionStrikes.push(strike);
 					optionDates.push(description.innerHTML);
 				}
 			}
@@ -124,7 +128,8 @@ chrome.storage.local.get("props", function (item) {
 			totGLPct = Number(totGLPct.replace("+", "").replace("%", ""));
 			
 			let backgroundColor = "#ffffff";
-			if(totGLPct >= 50) {
+			//if(totGLPct >= 50) {
+			if(remainingPPD * 15 < optionStrikes[i]) {
 				backgroundColor = "#cde1c9";
 			}
 			
