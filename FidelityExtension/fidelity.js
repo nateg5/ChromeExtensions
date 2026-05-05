@@ -116,25 +116,36 @@ chrome.storage.local.get("props", function (item) {
 			
 			let curVal = row.querySelector("[col-id='curVal']").innerText;
 			let qty = row.querySelector("[col-id='qty']").innerText;
-			let totGLPct = row.querySelector("[col-id='totGLPct']").innerText;
 			let fifTwo = row.querySelector("[col-id='fifTwo']");
 			
-			curVal = Number(curVal.replace("$", ""));
+			curVal = Number(curVal.replace("$", "").replace(",", ""));
 			qty = Number(qty);
 			let {dte, tradingDTE} = getDTEsAndPremium(optionDates[i], "");
 	
 			let remainingPPD = calculatePPD((curVal / qty) / 100, tradingDTE);
 			
-			totGLPct = Number(totGLPct.replace("+", "").replace("%", ""));
+			if(tradingDTE == 1) {
+				leftRows[rowIndex].style.backgroundColor = "#ffc0c0";
+			}
 			
-			let backgroundColor = "#ffffff";
-			//if(totGLPct >= 50) {
-			if(remainingPPD * 15 < optionStrikes[i]) {
-				backgroundColor = "#cde1c9";
+			if(remainingPPD * 10 < optionStrikes[i]) {
+				fifTwo.style.backgroundColor = "#cde1c9";
 			}
 			
 			fifTwo.getElementsByClassName("posweb-cell-fifty_two_week_range_container")[0].innerText = "$" + remainingPPD + "/day";
-			fifTwo.style.backgroundColor = backgroundColor;
+		}
+		
+		for(let i = 0; rightRows && i < rightRows.length; i++) {
+			let row = rightRows[i];
+			let qty = row.querySelector("[col-id='qty']").innerText;
+			let totGLPct = row.querySelector("[col-id='totGLPct']").innerText;
+			
+			qty = Number(qty);
+			totGLPct = Number(totGLPct.replace("+", "").replace("%", ""));
+			
+			if(qty >= 100 && totGLPct > 0) {
+				row.querySelector("[col-id='totGLPct']").style.backgroundColor = "#cde1c9";
+			}
 		}
 	}
 	/**/
