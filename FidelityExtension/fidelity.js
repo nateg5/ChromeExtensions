@@ -60,7 +60,7 @@ chrome.storage.local.get("props", function (item) {
 			let selectedRow = gridRows[i] || undefined;
 			let premiumText = selectedRow?.getElementsByTagName("div")[5]?.innerText?.replace("Sell at ", "") || undefined;
 			
-			if(selectedRow && selectedRow.children.length <= 11 && expirationText && premiumText) {
+			if(selectedRow && selectedRow.children.length <= 13 && expirationText && premiumText) {
 				let {dte, tradingDTE, premium} = getDTEsAndPremium(expirationText, premiumText);
 				
 				if(isNaN(dte) || isNaN(tradingDTE) || isNaN(premium)) {
@@ -137,8 +137,8 @@ chrome.storage.local.get("props", function (item) {
 		
 		for(let i = 0; rightRows && i < rightRows.length; i++) {
 			let row = rightRows[i];
-			let qty = row.querySelector("[col-id='qty']").innerText;
-			let totGLPct = row.querySelector("[col-id='totGLPct']").innerText;
+			let qty = row.querySelector("[col-id='qty']")?.innerText || "0";
+			let totGLPct = row.querySelector("[col-id='totGLPct']")?.innerText || "0";
 			
 			qty = Number(qty);
 			totGLPct = Number(totGLPct.replace("+", "").replace("%", ""));
@@ -167,7 +167,18 @@ chrome.storage.local.get("props", function (item) {
 		let adjustedDTE = dte + dteAdjustment;
 		let tradingDTE = (Math.floor(adjustedDTE / 7) * 5) + (adjustedDTE % 7) - dteAdjustment;
 		
-		//tradingDTE -= (((new Date()).getHours() - 8) / 7);
+		let now = new Date();
+		let tradingMinutes = (6 * 60) + 30;
+		let tradingStart = (8 * 60) + 30;
+		let nowTime = (now.getHours() * 60) + now.getMinutes();
+		let adjustedNowTime = nowTime - tradingStart;
+		if(adjustedNowTime > 0) {
+			if(adjustedNowTime < tradingMinutes) {
+				tradingDTE -= adjustedNowTime / tradingMinutes;
+			} else {
+				tradingDTE -= 1;
+			}
+		}
 		
 		return {dte, tradingDTE, premium};
   };
