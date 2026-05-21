@@ -1,5 +1,5 @@
 chrome.storage.local.get("props", function (item) {
-  let ppdDiv;
+  let greenHighlight = "#cde1c9";
   setInterval(() => {
     if (item?.props?.checked === false) {
       return;
@@ -27,17 +27,11 @@ chrome.storage.local.get("props", function (item) {
 			} else {
 				let ppd = calculatePPD(premium, tradingDTE);
 				let strike = Number(selectedRow.children[0].innerText);
-				let backgroundColor = "#ffffff";
+				let backgroundColor = "";
 				if(ppd / strike > .1) {
-					backgroundColor = "#cde1c9";
+					backgroundColor = greenHighlight;
 				}
 				selectedRow.children[2].innerHTML = "<div style='background-color: " + backgroundColor + "; padding-left: 10px;'>$" + ppd + "/day</div>";
-				
-				backgroundColor = "#ffffff";
-				if(premium * 1000 > strike) {
-					backgroundColor = "#cde1c9";
-				}
-				selectedRow.children[1].innerHTML = "<div style='background-color: " + backgroundColor + "; padding-left: 10px;'><span _ngcontent-ng-c995348536 class='slo-font-style'>" + premiumText + "</span></div>";
 			}
 		}
 	}
@@ -96,27 +90,23 @@ chrome.storage.local.get("props", function (item) {
 				} else {
 					let ppd = calculatePPD(premium, tradingDTE);
 					let strike = Number(selectedRow.children[0].innerText);
-					let backgroundColor = "#ffffff";
+					
+					selectedRow.children[6].innerHTML = "<div>$" + ppd + "/day</div>";
+					
 					if(ppd / strike > .1) {
-						backgroundColor = "#cde1c9";
+						selectedRow.children[6].style.backgroundColor = greenHighlight;
 					}
-					selectedRow.children[6].innerHTML = "<div style='background-color: " + backgroundColor + ";'>$" + ppd + "/day</div>";
-				
-					backgroundColor = "#ffffff";
-					if(premium * 1000 > strike) {
-						backgroundColor = "#cde1c9";
-					}
-					selectedRow.children[5].getElementsByTagName("a")[0].style.backgroundColor = backgroundColor;
 					
 					let intrinsicValue = Math.max(strike - lastPrice, 0);
 					let extrinsicValue = premium - intrinsicValue;
 					
 					selectedRow.children[7].innerHTML = "<div>$" + intrinsicValue.toFixed(2) + "</div>";
+					selectedRow.children[7].style.backgroundImage = null;
 					selectedRow.children[8].innerHTML = "<div>$" + extrinsicValue.toFixed(2) + "</div>";
+					selectedRow.children[8].style.backgroundImage = null;
 					
 					if(extrinsicValue == maxExtrinsicValue) {
-						selectedRow.children[8].style.backgroundColor = "#cde1c9";
-						selectedRow.children[8].style.backgroundImage = null;
+						selectedRow.children[8].style.backgroundColor = greenHighlight;
 					}
 				}
 			}
@@ -168,7 +158,7 @@ chrome.storage.local.get("props", function (item) {
 			}
 			
 			if(remainingPPD * 10 < optionStrikes[i]) {
-				fifTwo.style.backgroundColor = "#cde1c9";
+				fifTwo.style.backgroundColor = greenHighlight;
 			}
 			
 			fifTwo.getElementsByClassName("posweb-cell-fifty_two_week_range_container")[0].innerText = "$" + remainingPPD + "/day";
@@ -183,7 +173,7 @@ chrome.storage.local.get("props", function (item) {
 			totGLPct = Number(totGLPct.replace("+", "").replace("%", ""));
 			
 			if(qty >= 100 && totGLPct > 0) {
-				row.querySelector("[col-id='totGLPct']").style.backgroundColor = "#cde1c9";
+				row.querySelector("[col-id='totGLPct']").style.backgroundColor = greenHighlight;
 			}
 		}
 	}
