@@ -54,7 +54,35 @@ chrome.storage.local.get("props", function (item) {
 			expirationText = expirationText.replace("(W)", "");
 		}
 		
+		// get last price and set max extrinisic value, used later for calculating and highlighting extrinsic value
+		let lastPrice = Number(document.getElementsByClassName("oar-quote-last")[0].innerText.split("\n")[0].replace("$", ""));
+		let maxExtrinsicValue = 0;
+
 		let gridRows = document.getElementsByClassName("ag-row ag-row-level-1") || undefined;
+		
+		// pre iterate through row to find the max extrinsic value
+		for(let i = 0; gridRows && i < gridRows.length; i++) {
+			let selectedRow = gridRows[i] || undefined;
+			let premiumText = selectedRow?.getElementsByTagName("div")[5]?.innerText?.replace("Sell at ", "") || undefined;
+			
+			if(selectedRow && selectedRow.children.length <= 13 && expirationText && premiumText) {
+				let {dte, tradingDTE, premium} = getDTEsAndPremium(expirationText, premiumText);
+				
+				if(isNaN(dte) || isNaN(tradingDTE) || isNaN(premium)) {
+					continue;
+				} else {
+					let strike = Number(selectedRow.children[0].innerText);
+					
+					let intrinsicValue = Math.max(strike - lastPrice, 0);
+					let extrinsicValue = premium - intrinsicValue;
+					
+					if(extrinsicValue > maxExtrinsicValue) {
+						maxExtrinsicValue = extrinsicValue;
+					}
+					
+				}
+			}
+		}
 		
 		for(let i = 0; gridRows && i < gridRows.length; i++) {
 			let selectedRow = gridRows[i] || undefined;
@@ -79,6 +107,17 @@ chrome.storage.local.get("props", function (item) {
 						backgroundColor = "#cde1c9";
 					}
 					selectedRow.children[5].getElementsByTagName("a")[0].style.backgroundColor = backgroundColor;
+					
+					let intrinsicValue = Math.max(strike - lastPrice, 0);
+					let extrinsicValue = premium - intrinsicValue;
+					
+					selectedRow.children[7].innerHTML = "<div>$" + intrinsicValue.toFixed(2) + "</div>";
+					selectedRow.children[8].innerHTML = "<div>$" + extrinsicValue.toFixed(2) + "</div>";
+					
+					if(extrinsicValue == maxExtrinsicValue) {
+						selectedRow.children[8].style.backgroundColor = "#cde1c9";
+						selectedRow.children[8].style.backgroundImage = null;
+					}
 				}
 			}
 		}
@@ -124,7 +163,7 @@ chrome.storage.local.get("props", function (item) {
 	
 			let remainingPPD = calculatePPD((curVal / qty) / 100, tradingDTE);
 			
-			if(tradingDTE == 1) {
+			if(tradingDTE < 1) {
 				leftRows[rowIndex].style.backgroundColor = "#ffc0c0";
 			}
 			
