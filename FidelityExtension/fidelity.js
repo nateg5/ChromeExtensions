@@ -13,6 +13,11 @@ chrome.storage.local.get("props", function (item) {
 		expirationText = expirationText.replace(" AM", "").replace(" PM", "");
 	}
 	
+	let gridRowHeader = document.getElementsByClassName("grid-row header")[0];
+	if(gridRowHeader) {
+		gridRowHeader.children[2].innerHTML = "Premium per day";
+	}
+	
 	let gridRows = document.getElementsByClassName("osb-grid")[0]?.getElementsByClassName("grid-row") || undefined;
 	
 	for(let i = 0; gridRows && i < gridRows.length; i++) {
@@ -43,6 +48,11 @@ chrome.storage.local.get("props", function (item) {
 	let expirationDates = document.getElementsByClassName("expiration-date");
 	
 	if(expirationDates.length == 1) {
+		let headerRow = document.getElementsByClassName("ag-header-row ag-header-row-column")[0];
+		headerRow.children[6].getElementsByClassName("ag-header-cell-text")[0].innerHTML = "Premium per day";
+		headerRow.children[7].getElementsByClassName("ag-header-cell-text")[0].innerHTML = "Intrinsic value";
+		headerRow.children[8].getElementsByClassName("ag-header-cell-text")[0].innerHTML = "Extrinsic value";
+		
 		let expirationText = expirationDates[0]?.innerText || undefined;
 		if(expirationText && expirationText.indexOf("(W)") >= 0) {
 			expirationText = expirationText.replace("(W)", "");
