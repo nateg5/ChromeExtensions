@@ -61,6 +61,7 @@ chrome.storage.local.get("props", function (item) {
 		// get last price and set max extrinisic value, used later for calculating and highlighting extrinsic value
 		let lastPrice = Number(document.getElementsByClassName("oar-quote-last")[0].innerText.split("\n")[0].replace("$", ""));
 		let maxExtrinsicValue = 0;
+		let maxTheta = 0;
 
 		let gridRows = document.getElementsByClassName("ag-row ag-row-level-1") || undefined;
 		
@@ -76,12 +77,17 @@ chrome.storage.local.get("props", function (item) {
 					continue;
 				} else {
 					let strike = Number(selectedRow.children[0].innerText);
+					let theta = Math.abs(Number(selectedRow.children[11].innerText));
 					
 					let intrinsicValue = Math.max(strike - lastPrice, 0);
 					let extrinsicValue = premium - intrinsicValue;
 					
 					if(extrinsicValue > maxExtrinsicValue) {
 						maxExtrinsicValue = extrinsicValue;
+					}
+					
+					if(theta > maxTheta) {
+						maxTheta = theta;
 					}
 					
 				}
@@ -100,6 +106,7 @@ chrome.storage.local.get("props", function (item) {
 				} else {
 					let ppd = calculatePPD(premium, tradingDTE);
 					let strike = Number(selectedRow.children[0].innerText);
+					let theta = Math.abs(Number(selectedRow.children[11].innerText));
 					
 					selectedRow.children[6].innerHTML = "<div>$" + ppd + "/day</div>";
 					
@@ -117,6 +124,10 @@ chrome.storage.local.get("props", function (item) {
 					
 					if(extrinsicValue == maxExtrinsicValue) {
 						selectedRow.children[8].style.backgroundColor = greenHighlight;
+					}
+					
+					if(theta == maxTheta) {
+						selectedRow.children[11].style.backgroundColor = greenHighlight;
 					}
 				}
 			}
