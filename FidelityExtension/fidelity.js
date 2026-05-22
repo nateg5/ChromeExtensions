@@ -50,46 +50,26 @@ chrome.storage.local.get("props", function (item) {
 	if(expirationDates.length == 1) {
 		let headerRow = document.getElementsByClassName("ag-header-row ag-header-row-column")[0];
 		headerRow.children[6].getElementsByClassName("ag-header-cell-text")[0].innerHTML = "Premium per day";
-		headerRow.children[7].getElementsByClassName("ag-header-cell-text")[0].innerHTML = "Intrinsic value";
-		headerRow.children[8].getElementsByClassName("ag-header-cell-text")[0].innerHTML = "Extrinsic value";
 		
 		let expirationText = expirationDates[0]?.innerText || undefined;
 		if(expirationText && expirationText.indexOf("(W)") >= 0) {
 			expirationText = expirationText.replace("(W)", "");
 		}
 		
-		// get last price and set max extrinisic value, used later for calculating and highlighting extrinsic value
-		let lastPrice = Number(document.getElementsByClassName("oar-quote-last")[0].innerText.split("\n")[0].replace("$", ""));
-		let maxExtrinsicValue = 0;
+		// set max theta, used later for calculating and highlighting max theta
 		let maxTheta = 0;
 
 		let gridRows = document.getElementsByClassName("ag-row ag-row-level-1") || undefined;
 		
-		// pre iterate through row to find the max extrinsic value
+		// pre iterate through row to find the max theta
 		for(let i = 0; gridRows && i < gridRows.length; i++) {
 			let selectedRow = gridRows[i] || undefined;
-			let premiumText = selectedRow?.getElementsByTagName("div")[5]?.innerText?.replace("Sell at ", "") || undefined;
 			
-			if(selectedRow && selectedRow.children.length <= 13 && expirationText && premiumText) {
-				let {dte, tradingDTE, premium} = getDTEsAndPremium(expirationText, premiumText);
-				
-				if(isNaN(dte) || isNaN(tradingDTE) || isNaN(premium)) {
-					continue;
-				} else {
-					let strike = Number(selectedRow.children[0].innerText);
-					let theta = Math.abs(Number(selectedRow.children[11].innerText));
+			if(selectedRow && selectedRow.children.length == 12) {
+				let theta = Math.abs(Number(selectedRow.children[11].innerText));
 					
-					let intrinsicValue = Math.max(strike - lastPrice, 0);
-					let extrinsicValue = premium - intrinsicValue;
-					
-					if(extrinsicValue > maxExtrinsicValue) {
-						maxExtrinsicValue = extrinsicValue;
-					}
-					
-					if(theta > maxTheta) {
-						maxTheta = theta;
-					}
-					
+				if(theta > maxTheta) {
+					maxTheta = theta;
 				}
 			}
 		}
@@ -98,7 +78,7 @@ chrome.storage.local.get("props", function (item) {
 			let selectedRow = gridRows[i] || undefined;
 			let premiumText = selectedRow?.getElementsByTagName("div")[5]?.innerText?.replace("Sell at ", "") || undefined;
 			
-			if(selectedRow && selectedRow.children.length <= 13 && expirationText && premiumText) {
+			if(selectedRow && selectedRow.children.length == 12 && expirationText && premiumText) {
 				let {dte, tradingDTE, premium} = getDTEsAndPremium(expirationText, premiumText);
 				
 				if(isNaN(dte) || isNaN(tradingDTE) || isNaN(premium)) {
@@ -112,18 +92,6 @@ chrome.storage.local.get("props", function (item) {
 					
 					if(ppd / strike > .1) {
 						selectedRow.children[6].style.backgroundColor = greenHighlight;
-					}
-					
-					let intrinsicValue = Math.max(strike - lastPrice, 0);
-					let extrinsicValue = premium - intrinsicValue;
-					
-					selectedRow.children[7].innerHTML = "<div>$" + intrinsicValue.toFixed(2) + "</div>";
-					selectedRow.children[7].style.backgroundImage = null;
-					selectedRow.children[8].innerHTML = "<div>$" + extrinsicValue.toFixed(2) + "</div>";
-					selectedRow.children[8].style.backgroundImage = null;
-					
-					if(extrinsicValue == maxExtrinsicValue) {
-						selectedRow.children[8].style.backgroundColor = greenHighlight;
 					}
 					
 					if(theta == maxTheta) {
