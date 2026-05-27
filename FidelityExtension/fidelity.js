@@ -146,7 +146,7 @@ chrome.storage.local.get("props", function (item) {
 				leftRows[rowIndex].style.backgroundColor = "#ffc0c0";
 			}
 			
-			if(remainingPPD * 10 < optionStrikes[i]) {
+			if(remainingPPD * 11 < optionStrikes[i]) {
 				fifTwo.style.backgroundColor = greenHighlight;
 			}
 			
