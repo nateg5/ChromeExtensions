@@ -56,7 +56,8 @@ chrome.storage.local.get("props", function (item) {
 			expirationText = expirationText.replace("(W)", "");
 		}
 		
-		// set max theta, used later for calculating and highlighting max theta
+		// set max theta and time value, used later for calculating and highlighting max theta and time value
+		let maxTimeValue = 0;
 		let maxTheta = 0;
 
 		let gridRows = document.getElementsByClassName("ag-row ag-row-level-1") || undefined;
@@ -66,10 +67,15 @@ chrome.storage.local.get("props", function (item) {
 			let selectedRow = gridRows[i] || undefined;
 			
 			if(selectedRow && selectedRow.children.length == 12) {
+				let timeValue = Math.abs(Number(selectedRow.children[9].innerText));
 				let theta = Math.abs(Number(selectedRow.children[11].innerText));
 					
 				if(theta > maxTheta) {
 					maxTheta = theta;
+				}
+				
+				if(timeValue > maxTimeValue) {
+					maxTimeValue = timeValue;
 				}
 			}
 		}
@@ -86,6 +92,7 @@ chrome.storage.local.get("props", function (item) {
 				} else {
 					let ppd = calculatePPD(premium, tradingDTE);
 					let strike = Number(selectedRow.children[0].innerText);
+					let timeValue = Math.abs(Number(selectedRow.children[9].innerText));
 					let theta = Math.abs(Number(selectedRow.children[11].innerText));
 					
 					selectedRow.children[6].innerHTML = "<div>$" + ppd + "/day</div>";
@@ -96,6 +103,10 @@ chrome.storage.local.get("props", function (item) {
 					
 					if(theta == maxTheta) {
 						selectedRow.children[11].style.backgroundColor = greenHighlight;
+					}
+					
+					if(timeValue == maxTimeValue) {
+						selectedRow.children[9].style.backgroundColor = greenHighlight;
 					}
 				}
 			}
