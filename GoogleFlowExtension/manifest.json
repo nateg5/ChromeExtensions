@@ -1,0 +1,34 @@
+{
+  "name": "Google Flow Extension",
+  "version": "1",
+  "description": "",
+  "permissions": ["storage", "debugger", "tabs", "activeTab"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.labs.google/*"],
+      "js": ["googleFlow.js"]
+    }
+  ],
+  "host_permissions": ["https://*.labs.google/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/googleFlow16.png",
+      "32": "images/googleFlow32.png",
+      "48": "images/googleFlow48.png",
+      "128": "images/googleFlow128.png",
+      "128": "images/googleFlow256.png"
+    }
+  },
+  "icons": {
+    "16": "images/googleFlow16.png",
+    "32": "images/googleFlow32.png",
+    "48": "images/googleFlow48.png",
+    "128": "images/googleFlow128.png",
+    "128": "images/googleFlow256.png"
+  },
+  "manifest_version": 3
+}
