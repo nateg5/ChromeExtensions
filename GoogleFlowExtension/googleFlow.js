@@ -37,7 +37,7 @@ chrome.storage.local.get("props", function (item) {
 		array.splice(0, 1);
 	}
 	
-  }, 10000);
+  }, 30000);
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
