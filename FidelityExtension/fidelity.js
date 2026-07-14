@@ -1,5 +1,6 @@
 chrome.storage.local.get("props", function (item) {
   let greenHighlight = "#cde1c9";
+  let redHighlight = "#ffc0c0";
   setInterval(() => {
     if (item?.props?.checked === false) {
       return;
@@ -107,6 +108,8 @@ chrome.storage.local.get("props", function (item) {
 					
 					if(timeValue == maxTimeValue) {
 						selectedRow.children[9].style.backgroundColor = greenHighlight;
+					} else if(timeValue < premium / 10) {
+						selectedRow.children[9].style.backgroundColor = redHighlight;
 					}
 				}
 			}
@@ -154,7 +157,7 @@ chrome.storage.local.get("props", function (item) {
 			let remainingPPD = calculatePPD((curVal / qty) / 100, tradingDTE);
 			
 			if(tradingDTE < 1) {
-				leftRows[rowIndex].style.backgroundColor = "#ffc0c0";
+				leftRows[rowIndex].style.backgroundColor = redHighlight;
 			}
 			
 			if(remainingPPD * 11 < optionStrikes[i]) {
