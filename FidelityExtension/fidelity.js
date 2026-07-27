@@ -121,7 +121,7 @@ chrome.storage.local.get("props", function (item) {
 	 * Positions Page
 	 **/
 	let titleElement = document.getElementsByClassName("portfolio-dashboard__container-content--title")[0];
-	if(titleElement && (titleElement.innerHTML.indexOf("SPY Options") >= 0 || titleElement.innerHTML.indexOf("Stock Options") >= 0)) {
+	if(titleElement && (titleElement.innerHTML.indexOf("SPY Options") >= 0 || titleElement.innerHTML.indexOf("IWM Options") >= 0)) {
 		let leftRows = document.getElementsByClassName("ag-pinned-left-cols-container")[0]?.getElementsByClassName("ag-row");
 		let rightRows = document.getElementsByClassName("ag-center-cols-container")[0]?.getElementsByClassName("ag-row");
 		
