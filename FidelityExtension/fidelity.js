@@ -1,6 +1,7 @@
 chrome.storage.local.get("props", function (item) {
   let greenHighlight = "#cde1c9";
   let redHighlight = "#ffc0c0";
+  let orangeHighlight = "#ffe0c0";
   setInterval(() => {
     if (item?.props?.checked === false) {
       return;
@@ -94,6 +95,7 @@ chrome.storage.local.get("props", function (item) {
 					let ppd = calculatePPD(premium, tradingDTE);
 					let strike = Number(selectedRow.children[0].innerText);
 					let timeValue = Math.abs(Number(selectedRow.children[9].innerText));
+					let delta = Math.abs(Number(selectedRow.children[10].innerText));
 					let theta = Math.abs(Number(selectedRow.children[11].innerText));
 					
 					selectedRow.children[6].innerHTML = "<div>$" + ppd + "/day</div>";
@@ -104,12 +106,26 @@ chrome.storage.local.get("props", function (item) {
 					
 					if(theta == maxTheta) {
 						selectedRow.children[11].style.backgroundColor = greenHighlight;
+					} else if(theta < maxTheta / 10) {
+						selectedRow.children[11].style.backgroundColor = redHighlight;
+					} else if(theta < maxTheta / 2) {
+						selectedRow.children[11].style.backgroundColor = orangeHighlight;
 					}
 					
 					if(timeValue == maxTimeValue) {
 						selectedRow.children[9].style.backgroundColor = greenHighlight;
-					} else if(timeValue < premium / 10) {
+					} else if(timeValue < maxTimeValue / 10) {
 						selectedRow.children[9].style.backgroundColor = redHighlight;
+					} else if(timeValue < maxTimeValue / 2) {
+						selectedRow.children[9].style.backgroundColor = orangeHighlight;
+					}
+					
+					if(delta > 0.45 && delta < 0.55) {
+						selectedRow.children[10].style.backgroundColor = greenHighlight;
+					} else if(delta > 0.9 || delta < 0.1) {
+						selectedRow.children[10].style.backgroundColor = redHighlight;
+					} else if(delta > 0.75 || delta < 0.25) {
+						selectedRow.children[10].style.backgroundColor = orangeHighlight;
 					}
 				}
 			}
