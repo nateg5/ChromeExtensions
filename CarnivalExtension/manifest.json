@@ -1,0 +1,32 @@
+{
+  "name": "Carnival Extension",
+  "version": "1",
+  "description": "Calculates and orders search results by price per day",
+  "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.carnival.com/*"],
+      "js": ["carnival.js"]
+    }
+  ],
+  "host_permissions": ["https://*.carnival.com/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/carnival16.png",
+      "32": "images/carnival32.png",
+      "48": "images/carnival48.png",
+      "128": "images/carnival128.png"
+    }
+  },
+  "icons": {
+    "16": "images/carnival16.png",
+    "32": "images/carnival32.png",
+    "48": "images/carnival48.png",
+    "128": "images/carnival128.png"
+  },
+  "manifest_version": 3
+}
