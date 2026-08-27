@@ -9,21 +9,19 @@ chrome.storage.local.get("props", function (item) {
 	
 	let results = [];
 	
-	let cruises = document.getElementsByClassName("sc-bvrlno jPHeTw");
+	let cruises = Array.from(document.querySelector('[data-testid="tripTilesContainer"]').children).filter((child) => {
+		return child.querySelector('[data-testid="priceAmount"');
+	});
 	
 	for(let i = 0; i < cruises.length; i++) {
-		if(cruises[i].getElementsByClassName("sc-hOynoF koJuKT").length == 0) {
-			break;
-		}
-		
-		let price = Number(cruises[i].getElementsByClassName("sc-hOynoF koJuKT")[0].innerText.replace(",", ""));
-		let days = Number(cruises[i].getElementsByClassName("sc-ecPEgm jbicOR")[0].innerText.split("-")[0]);
+		let price = Number(cruises[i].querySelector('[data-testid="priceAmount"').innerText.replace(",", ""));
+		let days = Number(cruises[i].querySelector('[data-testid="itinerary-title"').innerText.split("-")[0]);
 		let ppd = Math.floor(price / days);
 		
 		if(cruises[i].getElementsByClassName("ppd").length == 0) {
 			let div = document.createElement("div");
 			div.classList.add("ppd");
-			cruises[i].getElementsByClassName("sc-cdoIaK kaetwo")[0].prepend(div);
+			cruises[i].querySelector('[data-testid="pricingContainer"').prepend(div);
 		}
 		
 		let ppdText = "$" + ppd + "/day";
@@ -47,7 +45,7 @@ chrome.storage.local.get("props", function (item) {
 		}
 	});
 	
-	let container = document.getElementsByClassName("sc-bzBgWG DnlNf")[0];
+	let container = document.querySelector('[data-testid="tripTilesContainer"]');
 	
 	let update = false;
 	
@@ -69,6 +67,6 @@ chrome.storage.local.get("props", function (item) {
 		});
 	}
 	
-	document.getElementsByClassName("sc-dLMFU sc-ikkxIA dhoQiW cvAoBL cclr-cmp-btn-primary-white")[0]?.click();
+	document.querySelector('[data-testid="loadMoreResults"]')?.click();
   }, 1000);
 });
