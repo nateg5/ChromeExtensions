@@ -7,9 +7,30 @@ chrome.storage.local.get("props", function (item) {
       return;
     }
 	
+	if(document.getElementsByTagName("body").length > 0 && document.getElementsByClassName("loadingOverlay").length == 0) {
+		let div = document.createElement("div");
+		div.classList.add("loadingOverlay");
+		document.getElementsByTagName("body")[0].prepend(div);
+		let loadingOverlay = document.getElementsByClassName("loadingOverlay")[0];
+		loadingOverlay.style.display = "none";
+		loadingOverlay.style.position = "fixed";
+		loadingOverlay.style.width = "100%";
+		loadingOverlay.style.height = "100%";
+		loadingOverlay.style.justifyContent = "center";
+		loadingOverlay.style.zIndex = "9999999";
+		loadingOverlay.style.alignItems = "center";
+		loadingOverlay.style.backgroundColor = "#00000080";
+		loadingOverlay.style.color = "#ffffff";
+		loadingOverlay.style.fontSize = "100px";
+		loadingOverlay.style.fontWeight = "bold";
+		loadingOverlay.style.fontFamily = "arial";
+		
+		loadingOverlay.innerText = "SORTING...";
+	}
+	
 	let results = [];
 	
-	let cruises = Array.from(document.querySelector('[data-testid="tripTilesContainer"]').children).filter((child) => {
+	let cruises = Array.from(document.querySelector('[data-testid="tripTilesContainer"]')?.children || []).filter((child) => {
 		return child.querySelector('[data-testid="priceAmount"');
 	});
 	
@@ -61,10 +82,14 @@ chrome.storage.local.get("props", function (item) {
 	}
 	
 	if(update) {
+		document.getElementsByClassName("loadingOverlay")[0].style.display = "flex";
+		
 		window.scrollTo({
 		  top: 0,
 		  behavior: 'smooth'
 		});
+	} else {
+		document.getElementsByClassName("loadingOverlay")[0].style.display = "none";
 	}
 	
 	document.querySelector('[data-testid="loadMoreResults"]')?.click();
