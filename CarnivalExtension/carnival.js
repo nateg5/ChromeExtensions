@@ -83,13 +83,13 @@ chrome.storage.local.get("props", function (item) {
 	
 	if(update) {
 		document.getElementsByClassName("loadingOverlay")[0].style.display = "flex";
+	} else if(document.getElementsByClassName("loadingOverlay")[0].style.display == "flex") {
+		document.getElementsByClassName("loadingOverlay")[0].style.display = "none";
 		
 		window.scrollTo({
 		  top: 0,
 		  behavior: 'smooth'
 		});
-	} else {
-		document.getElementsByClassName("loadingOverlay")[0].style.display = "none";
 	}
 	
 	document.querySelector('[data-testid="loadMoreResults"]')?.click();
