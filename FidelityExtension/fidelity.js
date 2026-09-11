@@ -49,9 +49,22 @@ chrome.storage.local.get("props", function (item) {
 	 **/
 	let expirationDates = document.getElementsByClassName("expiration-date");
 	
-	if(expirationDates.length == 1) {
-		let headerRow = document.getElementsByClassName("ag-header-row ag-header-row-column")[0];
-		headerRow.children[6].getElementsByClassName("ag-header-cell-text")[0].innerHTML = "Premium per day";
+	if(expirationDates.length == 1) {		
+		let STRIKE_INDEX = 0;
+		let PPD_INDEX = 6;
+		let TV_INDEX = 9;
+		let IV_INDEX = 10;
+		let DELTA_INDEX = 12;
+		let THETA_INDEX = 13;
+		
+		let optionStrategy = document.getElementsByClassName("binding-val")[0].innerText;
+		if(optionStrategy == "Calls") {
+			TV_INDEX = 10;
+			IV_INDEX = 11;
+		} else {		
+			let headerRow = document.getElementsByClassName("ag-header-row ag-header-row-column")[0];
+			headerRow.children[PPD_INDEX].getElementsByClassName("ag-header-cell-text")[0].innerHTML = "Premium per day";
+		}
 		
 		let expirationText = expirationDates[0]?.innerText || undefined;
 		if(expirationText && expirationText.indexOf("(W)") >= 0) {
@@ -60,6 +73,7 @@ chrome.storage.local.get("props", function (item) {
 		
 		// set max theta and time value, used later for calculating and highlighting max theta and time value
 		let maxTimeValue = 0;
+		let minIvValue = 100;
 		let maxTheta = 0;
 
 		let gridRows = document.getElementsByClassName("ag-row ag-row-level-1") || undefined;
@@ -68,9 +82,10 @@ chrome.storage.local.get("props", function (item) {
 		for(let i = 0; gridRows && i < gridRows.length; i++) {
 			let selectedRow = gridRows[i] || undefined;
 			
-			if(selectedRow && selectedRow.children.length == 12) {
-				let timeValue = Math.abs(Number(selectedRow.children[9].innerText));
-				let theta = Math.abs(Number(selectedRow.children[11].innerText));
+			if(selectedRow && selectedRow.children.length == 14) {
+				let timeValue = Math.abs(Number(selectedRow.children[TV_INDEX].innerText));
+				let ivValue = Math.abs(Number(selectedRow.children[IV_INDEX].innerText.replace("%", "")));
+				let theta = Math.abs(Number(selectedRow.children[THETA_INDEX].innerText));
 					
 				if(theta > maxTheta) {
 					maxTheta = theta;
@@ -79,6 +94,10 @@ chrome.storage.local.get("props", function (item) {
 				if(timeValue > maxTimeValue) {
 					maxTimeValue = timeValue;
 				}
+				
+				if(ivValue < minIvValue) {
+					minIvValue = ivValue;
+				}
 			}
 		}
 		
@@ -86,46 +105,57 @@ chrome.storage.local.get("props", function (item) {
 			let selectedRow = gridRows[i] || undefined;
 			let premiumText = selectedRow?.getElementsByTagName("div")[5]?.innerText?.replace("Sell at ", "") || undefined;
 			
-			if(selectedRow && selectedRow.children.length == 12 && expirationText && premiumText) {
+			if(selectedRow && selectedRow.children.length == 14 && expirationText && premiumText) {
 				let {dte, tradingDTE, premium} = getDTEsAndPremium(expirationText, premiumText);
 				
 				if(isNaN(dte) || isNaN(tradingDTE) || isNaN(premium)) {
-					selectedRow.children[6].innerHTML = "--";
+					if(optionStrategy == "Puts") {
+						selectedRow.children[PPD_INDEX].innerHTML = "--";
+					}
 				} else {
 					let ppd = calculatePPD(premium, tradingDTE);
-					let strike = Number(selectedRow.children[0].innerText);
-					let timeValue = Math.abs(Number(selectedRow.children[9].innerText));
-					let delta = Math.abs(Number(selectedRow.children[10].innerText));
-					let theta = Math.abs(Number(selectedRow.children[11].innerText));
+					let strike = Number(selectedRow.children[STRIKE_INDEX].innerText);
+					let timeValue = Math.abs(Number(selectedRow.children[TV_INDEX].innerText));
+					let ivValue = Math.abs(Number(selectedRow.children[IV_INDEX].innerText.replace("%", "")));
+					let delta = Math.abs(Number(selectedRow.children[DELTA_INDEX].innerText));
+					let theta = Math.abs(Number(selectedRow.children[THETA_INDEX].innerText));
 					
-					selectedRow.children[6].innerHTML = "<div>$" + ppd + "/day</div>";
-					
-					if(ppd / strike > .1) {
-						selectedRow.children[6].style.backgroundColor = greenHighlight;
+					if(optionStrategy == "Puts") {
+						selectedRow.children[PPD_INDEX].innerHTML = "<div>$" + ppd + "/day</div>";
+						
+						if(ppd / strike > .1) {
+							selectedRow.children[PPD_INDEX].style.backgroundColor = greenHighlight;
+						}
 					}
 					
 					if(theta == maxTheta) {
-						selectedRow.children[11].style.backgroundColor = greenHighlight;
+						selectedRow.children[THETA_INDEX].style.backgroundColor = greenHighlight;
 					} else if(theta < maxTheta / 10) {
-						selectedRow.children[11].style.backgroundColor = redHighlight;
+						selectedRow.children[THETA_INDEX].style.backgroundColor = redHighlight;
 					} else if(theta < maxTheta / 2) {
-						selectedRow.children[11].style.backgroundColor = orangeHighlight;
+						selectedRow.children[THETA_INDEX].style.backgroundColor = orangeHighlight;
 					}
 					
 					if(timeValue == maxTimeValue) {
-						selectedRow.children[9].style.backgroundColor = greenHighlight;
+						selectedRow.children[TV_INDEX].style.backgroundColor = greenHighlight;
 					} else if(timeValue < maxTimeValue / 10) {
-						selectedRow.children[9].style.backgroundColor = redHighlight;
+						selectedRow.children[TV_INDEX].style.backgroundColor = redHighlight;
 					} else if(timeValue < maxTimeValue / 2) {
-						selectedRow.children[9].style.backgroundColor = orangeHighlight;
+						selectedRow.children[TV_INDEX].style.backgroundColor = orangeHighlight;
+					}
+					
+					if(ivValue == minIvValue) {
+						selectedRow.children[IV_INDEX].style.backgroundColor = greenHighlight;
+					} else if(ivValue > minIvValue * 1.5) {
+						selectedRow.children[IV_INDEX].style.backgroundColor = orangeHighlight;
 					}
 					
 					if(delta > 0.45 && delta < 0.55) {
-						selectedRow.children[10].style.backgroundColor = greenHighlight;
+						selectedRow.children[DELTA_INDEX].style.backgroundColor = greenHighlight;
 					} else if(delta > 0.9 || delta < 0.1) {
-						selectedRow.children[10].style.backgroundColor = redHighlight;
+						selectedRow.children[DELTA_INDEX].style.backgroundColor = redHighlight;
 					} else if(delta > 0.75 || delta < 0.25) {
-						selectedRow.children[10].style.backgroundColor = orangeHighlight;
+						selectedRow.children[DELTA_INDEX].style.backgroundColor = orangeHighlight;
 					}
 				}
 			}
