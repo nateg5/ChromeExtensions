@@ -109,9 +109,7 @@ chrome.storage.local.get("props", function (item) {
 				let {dte, tradingDTE, premium} = getDTEsAndPremium(expirationText, premiumText);
 				
 				if(isNaN(dte) || isNaN(tradingDTE) || isNaN(premium)) {
-					if(optionStrategy == "Puts") {
-						selectedRow.children[PPD_INDEX].innerHTML = "--";
-					}
+					selectedRow.children[PPD_INDEX].innerHTML = "--";
 				} else {
 					let ppd = calculatePPD(premium, tradingDTE);
 					let strike = Number(selectedRow.children[STRIKE_INDEX].innerText);
@@ -120,12 +118,10 @@ chrome.storage.local.get("props", function (item) {
 					let delta = Math.abs(Number(selectedRow.children[DELTA_INDEX].innerText));
 					let theta = Math.abs(Number(selectedRow.children[THETA_INDEX].innerText));
 					
-					if(optionStrategy == "Puts") {
-						selectedRow.children[PPD_INDEX].innerHTML = "<div>$" + ppd + "/day</div>";
-						
-						if(ppd / strike > .1) {
-							selectedRow.children[PPD_INDEX].style.backgroundColor = greenHighlight;
-						}
+					selectedRow.children[PPD_INDEX].innerHTML = "<div>$" + ppd + "/day</div>";
+					
+					if(ppd / strike > .1) {
+						selectedRow.children[PPD_INDEX].style.backgroundColor = greenHighlight;
 					}
 					
 					if(theta == maxTheta) {
