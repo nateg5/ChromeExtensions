@@ -2,6 +2,7 @@ chrome.storage.local.get("props", function (item) {
   let greenHighlight = "#cde1c9";
   let redHighlight = "#ffc0c0";
   let orangeHighlight = "#ffe0c0";
+  let update = 0;
   setInterval(() => {
     if (item?.props?.checked === false) {
       return;
@@ -68,11 +69,9 @@ chrome.storage.local.get("props", function (item) {
 	
 	let container = document.querySelector('[data-testid="tripTilesContainer"]');
 	
-	let update = false;
-	
 	for(let i = 0; i < cruises.length && i < results.length; i++) {
 		if(cruises[i] != results[i].cruise) {
-			update = true;
+			update = 5;
 			break;
 		}
 	}
@@ -83,6 +82,7 @@ chrome.storage.local.get("props", function (item) {
 	
 	if(update) {
 		document.getElementsByClassName("loadingOverlay")[0].style.display = "flex";
+		update--;
 	} else if(document.getElementsByClassName("loadingOverlay")[0].style.display == "flex") {
 		document.getElementsByClassName("loadingOverlay")[0].style.display = "none";
 		
