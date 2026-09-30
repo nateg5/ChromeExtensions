@@ -68,7 +68,7 @@ chrome.storage.local.get("props", function (item) {
 		
 		let expirationText = expirationDates[0]?.innerText || undefined;
 		if(expirationText && expirationText.indexOf("(W)") >= 0) {
-			expirationText = expirationText.replace("(W)", "");
+			expirationText = expirationText.replace("(W)", "").replace("PM", "");
 		}
 		
 		// set max theta and time value, used later for calculating and highlighting max theta and time value
